@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+:root { --accent: #FF4B1F; --deep: #C93416; --dscale: 1; }
+* { box-sizing: border-box; }
+html { background: #080808; overflow-x: clip; }
+body { margin: 0; background: #080808; color: #F5F3ED; font-family: Archivo, "Helvetica Neue", Helvetica, sans-serif; -webkit-font-smoothing: antialiased; }
+img { display: block; }
+a { color: #F5F3ED; text-decoration: none; }
+a:hover { color: var(--accent); }
+::selection { background: var(--accent); color: #080808; }
+:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
+@keyframes dbUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes dbInL { from { clip-path: inset(0 100% 0 0); transform: translateX(-26px); } to { clip-path: inset(0 0 0 0); transform: translateX(0); } }
+@keyframes dbInR { from { clip-path: inset(0 0 0 100%); transform: translateX(26px); } to { clip-path: inset(0 0 0 0); transform: translateX(0); } }
+@keyframes dbFig { from { clip-path: inset(0 0 100% 0); transform: scale(1.06); } to { clip-path: inset(0 0 0% 0); transform: scale(1); } }
+@keyframes dbLine { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes dbPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+@media (prefers-reduced-motion: reduce) { * { animation-duration: 0.001ms !important; animation-delay: 0ms !important; transition-duration: 0.001ms !important; } }
+</style>
+</helmet>
+
+<div style="position:relative;width:100%;overflow:clip;background:#080808">
+
+  <div ref="{{ cursorRef }}" style="position:fixed;top:0;left:0;z-index:95;pointer-events:none;opacity:0;transform:translate3d(-100px,-100px,0);transition:opacity 280ms ease,width 320ms cubic-bezier(.16,1,.3,1),height 320ms cubic-bezier(.16,1,.3,1),margin 320ms cubic-bezier(.16,1,.3,1);width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--accent,#FF4B1F);display:flex;align-items:center;justify-content:center">
+    <span ref="{{ cursorLabelRef }}" style="font-size:10px;font-weight:600;letter-spacing:0.16em;color:#080808;opacity:0;transition:opacity 200ms ease;white-space:nowrap">VIEW ↗</span>
+  </div>
+
+  <div ref="{{ progressRef }}" style="position:fixed;top:0;left:0;z-index:96;height:1px;width:0%;background:var(--accent,#FF4B1F);pointer-events:none"></div>
+
+  <header ref="{{ navRef }}" style="position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;padding:24px clamp(18px,4vw,64px);background:rgba(8,8,8,0);border-bottom:1px solid rgba(36,36,36,0);transition:padding 500ms cubic-bezier(.16,1,.3,1),background 500ms ease,border-color 500ms ease">
+    <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+      <div style="width:100%;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px">
+        <a href="#top" style="justify-self:start;display:flex;align-items:center;gap:12px;white-space:nowrap">
+          <span style="width:5px;height:5px;border-radius:50%;background:var(--accent,#FF4B1F);flex:0 0 auto;animation:dbPulse 2600ms ease-in-out infinite"></span>
+          <span style="font-size:12px;font-weight:600;letter-spacing:0.24em;text-transform:uppercase">Dawid Bubnow</span>
+        </a>
+        <span ref="{{ navStateRef }}" style="justify-self:center;font-size:10px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">01 — Index</span>
+        <nav style="justify-self:end;display:flex;align-items:center;gap:clamp(14px,2.2vw,32px)">
+          <a href="#work" style="display:flex;align-items:baseline;gap:7px;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;border-bottom:1px solid transparent;padding-bottom:3px;transition:color 300ms ease,border-color 300ms ease" style-hover="color:var(--accent,#FF4B1F);border-color:var(--accent,#FF4B1F)"><span style="font-size:9px;opacity:0.5">01</span>Work</a>
+          <a href="#about" style="display:flex;align-items:baseline;gap:7px;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;border-bottom:1px solid transparent;padding-bottom:3px;transition:color 300ms ease,border-color 300ms ease" style-hover="color:var(--accent,#FF4B1F);border-color:var(--accent,#FF4B1F)"><span style="font-size:9px;opacity:0.5">02</span>About</a>
+          <a href="#contact" style="display:flex;align-items:baseline;gap:7px;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;border-bottom:1px solid transparent;padding-bottom:3px;transition:color 300ms ease,border-color 300ms ease" style-hover="color:var(--accent,#FF4B1F);border-color:var(--accent,#FF4B1F)"><span style="font-size:9px;opacity:0.5">03</span>Contact</a>
+        </nav>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+      <div style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px">
+        <a href="#top" style="display:flex;align-items:center;gap:10px;min-width:0">
+          <span style="width:5px;height:5px;border-radius:50%;background:var(--accent,#FF4B1F);flex:0 0 auto;animation:dbPulse 2600ms ease-in-out infinite"></span>
+          <span style="font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;white-space:nowrap">Dawid Bubnow</span>
+        </a>
+        <button onClick="{{ openMenu }}" aria-label="Open menu" style="appearance:none;background:none;border:0;padding:8px 0 8px 16px;margin:0;color:#F5F3ED;font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;flex:0 0 auto">Menu</button>
+      </div>
+    </sc-if>
+  </header>
+
+  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+    <div ref="{{ menuRef }}" style="position:fixed;inset:0;z-index:98;background:#080808;display:flex;flex-direction:column;justify-content:space-between;padding:24px 18px 30px;opacity:0;pointer-events:none;clip-path:inset(0 0 100% 0);transition:clip-path 760ms cubic-bezier(.16,1,.3,1),opacity 360ms ease">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+        <span style="display:flex;align-items:center;gap:10px">
+          <span style="width:5px;height:5px;border-radius:50%;background:var(--accent,#FF4B1F)"></span>
+          <span style="font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase">Dawid Bubnow</span>
+        </span>
+        <button onClick="{{ closeMenu }}" aria-label="Close menu" style="appearance:none;background:none;border:0;padding:8px 0 8px 16px;margin:0;color:#8E8B85;font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer">Close</button>
+      </div>
+      <nav style="display:flex;flex-direction:column;gap:clamp(10px,2.4vh,22px);padding:clamp(24px,6vh,60px) 0">
+        <a data-menu-item="1" href="#work" onClick="{{ closeMenu }}" style="display:flex;align-items:baseline;gap:16px;font-size:clamp(44px,14.5vw,78px);line-height:0.92;font-weight:600;letter-spacing:-0.045em;opacity:0;transform:translateY(26px);transition:opacity 620ms ease,transform 820ms cubic-bezier(.16,1,.3,1)"><span style="font-size:11px;font-weight:500;letter-spacing:0.2em;color:var(--accent,#FF4B1F)">01</span>Work</a>
+        <a data-menu-item="2" href="#about" onClick="{{ closeMenu }}" style="display:flex;align-items:baseline;gap:16px;font-size:clamp(44px,14.5vw,78px);line-height:0.92;font-weight:600;letter-spacing:-0.045em;opacity:0;transform:translateY(26px);transition:opacity 620ms ease,transform 820ms cubic-bezier(.16,1,.3,1)"><span style="font-size:11px;font-weight:500;letter-spacing:0.2em;color:var(--accent,#FF4B1F)">02</span>About</a>
+        <a data-menu-item="3" href="#contact" onClick="{{ closeMenu }}" style="display:flex;align-items:baseline;gap:16px;font-size:clamp(44px,14.5vw,78px);line-height:0.92;font-weight:600;letter-spacing:-0.045em;opacity:0;transform:translateY(26px);transition:opacity 620ms ease,transform 820ms cubic-bezier(.16,1,.3,1)"><span style="font-size:11px;font-weight:500;letter-spacing:0.2em;color:var(--accent,#FF4B1F)">03</span>Contact</a>
+      </nav>
+      <div data-menu-item="4" style="display:flex;flex-direction:column;gap:14px;opacity:0;transform:translateY(26px);transition:opacity 620ms ease,transform 820ms cubic-bezier(.16,1,.3,1)">
+        <span style="height:1px;background:#242424"></span>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+          <span style="display:flex;align-items:center;gap:8px;font-size:10px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--accent,#FF4B1F)"></span>Available
+          </span>
+          <span style="font-size:10px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85">Warsaw — 2026</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- 01 HERO -->
+  <section id="top" data-nav="01 — Index" data-screen-label="01 Hero" style="position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 0 clamp(20px,3.2vw,40px);overflow:hidden">
+
+    <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute;top:0;bottom:0;right:0;width:clamp(300px,43%,760px);z-index:0;background:#0C0C0C;border-left:1px solid #141414"></div>
+
+      <div style="position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:clamp(80px,12vh,140px) 0 clamp(110px,16vh,180px) clamp(18px,4vw,64px);pointer-events:none">
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:clamp(16px,3vh,30px);animation:dbUp 900ms cubic-bezier(.16,1,.3,1) 120ms both">
+          <span style="font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">Creative web designer &amp; developer</span>
+          <span style="font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#8E8B85">Warsaw — Poland — <em style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;text-transform:none;font-size:15px">2026</em></span>
+        </div>
+        <span ref="{{ wordA }}" style="display:block;margin-left:-0.055em;font-size:calc(min(clamp(64px,11.4vw,208px),23vh) * var(--dscale,1));line-height:0.8;font-weight:600;letter-spacing:-0.05em;white-space:nowrap;will-change:transform;animation:dbInL 1200ms cubic-bezier(.16,1,.3,1) 620ms both">DAWID</span>
+        <span ref="{{ wordB }}" style="display:block;margin-left:clamp(16px,5.2vw,116px);font-size:calc(min(clamp(64px,11.4vw,208px),23vh) * var(--dscale,1));line-height:0.8;font-weight:600;letter-spacing:-0.05em;white-space:nowrap;color:#F2F0EA;will-change:transform;animation:dbInR 1200ms cubic-bezier(.16,1,.3,1) 780ms both">BUBNOW</span>
+        <span ref="{{ heroRule }}" style="display:block;height:1px;background:var(--accent,#FF4B1F);width:70vw;margin-top:clamp(20px,4vh,42px);transform-origin:left;animation:dbLine 1300ms cubic-bezier(.16,1,.3,1) 1060ms both"></span>
+      </div>
+
+      <img ref="{{ heroFig }}" src="assets/hero-cutout.png" alt="Dawid Bubnow" style="position:absolute;right:clamp(-34px,-2.4vw,0px);bottom:0;z-index:2;height:min(90vh,980px);width:auto;max-width:52vw;object-fit:contain;object-position:100% 100%;will-change:transform;animation:dbFig 1500ms cubic-bezier(.16,1,.3,1) 240ms both;-webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 7%,#000 88%,transparent 100%),linear-gradient(90deg,transparent 0%,#000 15%,#000 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,transparent 0%,#000 7%,#000 88%,transparent 100%),linear-gradient(90deg,transparent 0%,#000 15%,#000 100%);mask-composite:intersect" />
+
+      <div style="position:relative;z-index:6;display:flex;align-items:flex-end;justify-content:space-between;gap:40px;padding:0 clamp(18px,4vw,64px)">
+        <span style="display:flex;align-items:center;gap:9px;font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;white-space:nowrap;animation:dbUp 900ms cubic-bezier(.16,1,.3,1) 1240ms both">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--accent,#FF4B1F);animation:dbPulse 2600ms ease-in-out infinite"></span>Available for select projects
+        </span>
+        <a href="#work" style="display:flex;align-items:center;gap:10px;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;padding-bottom:4px;border-bottom:1px solid #242424;white-space:nowrap;flex:0 0 auto;transition:border-color 300ms ease,gap 400ms ease;animation:dbUp 900ms cubic-bezier(.16,1,.3,1) 1380ms both" style-hover="border-color:var(--accent,#FF4B1F);gap:18px">Selected work <span style="color:var(--accent,#FF4B1F)">↓</span></a>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;overflow:hidden">
+        <img src="assets/hero-portrait.png" alt="Dawid Bubnow" style="position:absolute;top:0;left:0;width:100%;height:76%;object-fit:cover;object-position:56% 14%;animation:dbFig 1400ms cubic-bezier(.16,1,.3,1) 200ms both;-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 58%,transparent 97%);mask-image:linear-gradient(180deg,#000 0%,#000 58%,transparent 97%)" />
+      </div>
+      <div style="position:relative;z-index:6;padding:0 18px;display:flex;flex-direction:column;gap:18px">
+        <h1 style="margin:0;font-size:calc(clamp(58px,20.5vw,100px) * var(--dscale,1));line-height:0.82;font-weight:600;letter-spacing:-0.045em;animation:dbInL 1000ms cubic-bezier(.16,1,.3,1) 540ms both">DAWID<br />BUBNOW</h1>
+        <div style="display:flex;flex-direction:column;gap:12px;animation:dbUp 800ms cubic-bezier(.16,1,.3,1) 900ms both">
+          <div style="height:1px;background:#242424"></div>
+          <div style="display:flex;justify-content:space-between;gap:16px">
+            <span style="font-size:10px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:#8E8B85">Creative web designer<br />&amp; developer</span>
+            <span style="font-size:10px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:#8E8B85;text-align:right">Warsaw<br />2026</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:4px">
+            <span style="display:flex;align-items:center;gap:8px;font-size:10px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase">
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--accent,#FF4B1F);animation:dbPulse 2600ms ease-in-out infinite"></span>Available
+            </span>
+            <a href="#work" style="font-size:11px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;border-bottom:1px solid #242424;padding-bottom:3px">Work <span style="color:var(--accent,#FF4B1F)">↓</span></a>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </section>
+
+  <!-- 02 MANIFESTO -->
+  <section data-nav="02 — Manifesto" data-screen-label="02 Manifesto" style="padding:clamp(96px,17vh,200px) clamp(18px,4vw,64px) clamp(96px,16vh,190px);overflow:hidden">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:clamp(40px,7vh,80px)">
+      <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent,#FF4B1F)">02</span>
+      <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">Manifesto</span>
+    </div>
+    <div data-reveal="mask">
+      <p ref="{{ manA }}" style="margin:0;max-width:15ch;font-size:calc(clamp(40px,8.4vw,148px) * var(--dscale,1));line-height:0.9;font-weight:600;letter-spacing:-0.035em;text-wrap:balance;will-change:transform">DESIGN WITHOUT CODE IS A PICTURE.</p>
+    </div>
+    <div data-reveal="mask" style="margin-top:clamp(18px,3.4vh,46px)">
+      <p ref="{{ manB }}" style="margin:0 0 0 auto;max-width:15ch;text-align:right;font-size:calc(clamp(40px,8.4vw,148px) * var(--dscale,1));line-height:0.9;font-weight:600;letter-spacing:-0.035em;color:#F2F0EA;text-wrap:balance;will-change:transform">CODE WITHOUT DESIGN IS A <em style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-0.005em;text-transform:lowercase">page<span style="color:var(--accent,#FF4B1F)">.</span></em></p>
+    </div>
+  </section>
+
+  <!-- 03 SELECTED WORK -->
+  <section id="work" data-nav="03 — Selected work" data-screen-label="03 Selected work" style="padding:0 0 clamp(20px,4vh,56px)">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 24px;padding:0 clamp(18px,4vw,64px) 16px;border-bottom:1px solid #242424;margin-bottom:clamp(40px,7vh,88px)">
+      <div style="display:flex;align-items:center;gap:14px">
+        <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent,#FF4B1F)">03</span>
+        <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">Selected work</span>
+      </div>
+      <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">Curated — not archived</span>
+    </div>
+
+    <!-- 01 SAFEROAD — full bleed, wide crop, title straddling the edge -->
+    <article ref="{{ p1Root }}" data-cursor="view" onClick="{{ openFirst }}" onMouseEnter="{{ p1In }}" onMouseLeave="{{ p1Out }}" style="position:relative;cursor:pointer;margin-bottom:clamp(80px,13vh,160px)">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 16px;padding:0 clamp(18px,4vw,64px) 12px">
+        <span style="font-size:11px;font-weight:600;letter-spacing:0.18em;white-space:nowrap;color:var(--accent,#FF4B1F)">01 / 02</span>
+        <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">Web design — Frontend development</span>
+        <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85">szkolasr.pl</span>
+        <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85">2026</span>
+      </div>
+      <div ref="{{ p1Mask }}" data-reveal="mask" style="position:relative;width:100%;aspect-ratio:2.5/1;overflow:hidden;background:#111111">
+        <img ref="{{ p1Desktop }}" src="assets/saferoad-desktop.png" alt="SafeRoad website" style="position:absolute;inset:0;width:100%;height:118%;object-fit:cover;object-position:50% 0%;will-change:transform;transition:transform 1200ms cubic-bezier(.16,1,.3,1)" />
+      </div>
+      <div style="position:relative;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 20px;padding:0 clamp(18px,4vw,64px)">
+        <h3 ref="{{ p1Title }}" style="margin:-0.3em 0 0;font-size:calc(clamp(46px,9.6vw,168px) * var(--dscale,1));line-height:0.84;font-weight:600;letter-spacing:-0.04em;mix-blend-mode:difference;transition:letter-spacing 700ms cubic-bezier(.16,1,.3,1)">SAFEROAD</h3>
+        <span ref="{{ p1Cta }}" style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;padding-bottom:4px;border-bottom:1px solid #242424;white-space:nowrap;transition:border-color 400ms ease,gap 400ms ease">View project <span style="color:var(--accent,#FF4B1F)">↗</span></span>
+      </div>
+      <img ref="{{ p1Phone }}" src="assets/saferoad-phone.png" alt="SafeRoad mobile" style="position:absolute;right:clamp(18px,4vw,64px);top:26%;width:clamp(86px,9.4vw,152px);height:auto;border:1px solid #242424;background:#111111;z-index:3;will-change:transform;transition:transform 1000ms cubic-bezier(.16,1,.3,1)" />
+    </article>
+
+    <!-- 02 FORGE — dark immersive band, inverted rhythm -->
+    <article ref="{{ p2Root }}" data-cursor="view" onClick="{{ openSecond }}" onMouseEnter="{{ p2In }}" onMouseLeave="{{ p2Out }}" style="position:relative;cursor:pointer;background:#0C0C0C;border-top:1px solid #141414;border-bottom:1px solid #141414;padding:clamp(40px,7vh,84px) clamp(18px,4vw,64px) clamp(28px,5vh,56px)">
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px;margin-bottom:clamp(18px,3.4vh,40px)">
+        <div style="flex:0 1 auto;display:flex;flex-direction:column;gap:8px;padding-bottom:8px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:0.18em;white-space:nowrap;color:var(--accent,#FF4B1F)">02 / 02</span>
+          <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">Concept — Product design / Frontend — 2026</span>
+        </div>
+        <h3 ref="{{ p2Title }}" style="margin:0;text-align:right;font-size:calc(clamp(46px,9.6vw,168px) * var(--dscale,1));line-height:0.84;font-weight:600;letter-spacing:-0.04em;transition:letter-spacing 700ms cubic-bezier(.16,1,.3,1)">FORGE</h3>
+      </div>
+      <div style="position:relative;display:flex;flex-wrap:wrap-reverse;align-items:stretch;gap:clamp(12px,1.8vw,28px)">
+        <div ref="{{ p2PhoneWrap }}" data-reveal="mask" style="flex:0 1 clamp(150px,19vw,274px);position:relative;overflow:hidden;background:#111111;border:1px solid #242424;align-self:flex-end;will-change:transform">
+          <img ref="{{ p2Phone }}" src="assets/forge-phone.png" alt="Forge mobile" style="width:100%;height:100%;min-height:clamp(300px,38vh,440px);object-fit:cover;object-position:50% 0%;transition:transform 1200ms cubic-bezier(.16,1,.3,1)" />
+        </div>
+        <div ref="{{ p2Mask }}" data-reveal="mask" style="flex:1 1 400px;min-width:0;position:relative;overflow:hidden;background:#111111">
+          <img ref="{{ p2Desktop }}" src="assets/forge-desktop.png" alt="Forge landing page" style="width:100%;height:100%;min-height:clamp(260px,42vh,500px);object-fit:cover;object-position:16% 50%;will-change:transform;transition:transform 1200ms cubic-bezier(.16,1,.3,1)" />
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 20px;margin-top:14px;padding-top:12px;border-top:1px solid #1C1C1C">
+        <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">Habit system — concept, not published</span>
+        <span ref="{{ p2Cta }}" style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;white-space:nowrap;transition:gap 400ms ease">View project <span style="color:var(--accent,#FF4B1F)">↗</span></span>
+      </div>
+    </article>
+  </section>
+
+  <!-- 04 DESIGN × CODE -->
+  <section ref="{{ dxcSection }}" data-nav="04 — One discipline" data-screen-label="04 Design x Code" style="position:relative;padding:clamp(80px,12vh,150px) 0 clamp(52px,8vh,96px);background:#111111;overflow:hidden">
+    <div style="display:flex;align-items:center;gap:14px;padding:0 clamp(18px,4vw,64px);margin-bottom:clamp(28px,5vh,64px)">
+      <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent,#FF4B1F)">04</span>
+      <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">One discipline</span>
+    </div>
+    <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:clamp(2px,0.6vh,10px)">
+      <span ref="{{ dxcDesign }}" style="display:block;font-size:calc(clamp(58px,15vw,250px) * var(--dscale,1));line-height:0.82;font-weight:600;letter-spacing:-0.045em;white-space:nowrap;will-change:transform">DESIGN</span>
+      <span ref="{{ dxcX }}" style="display:block;font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:calc(clamp(28px,4.4vw,72px) * var(--dscale,1));line-height:1;color:var(--accent,#FF4B1F);will-change:transform">×</span>
+      <span ref="{{ dxcCode }}" style="display:block;font-size:calc(clamp(58px,15vw,250px) * var(--dscale,1));line-height:0.82;font-weight:600;letter-spacing:-0.045em;white-space:nowrap;color:#8E8B85;will-change:transform,color">CODE</span>
+    </div>
+    <p style="margin:clamp(28px,5vh,60px) auto 0;max-width:30ch;text-align:center;font-size:clamp(14px,1.2vw,17px);line-height:1.45;color:#8E8B85;padding:0 clamp(18px,4vw,64px)">Two words, one process. The design decides what the code has to prove.</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px clamp(28px,5vw,80px);margin:clamp(32px,6vh,72px) clamp(18px,4vw,64px) 0;padding-top:16px;border-top:1px solid #1C1C1C">
+      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px clamp(14px,2vw,28px)">
+        <li style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F5F3ED">Design</li>
+        <li style="font-size:13px;letter-spacing:0.02em;color:#8E8B85">Web design</li>
+        <li style="font-size:13px;letter-spacing:0.02em;color:#8E8B85">UI / UX</li>
+        <li style="font-size:13px;letter-spacing:0.02em;color:#8E8B85">Art direction</li>
+      </ul>
+      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:flex-end;gap:8px clamp(14px,2vw,28px)">
+        <li style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#F5F3ED">Code</li>
+        <li style="font-size:13px;letter-spacing:0.02em;color:#8E8B85">React</li>
+        <li style="font-size:13px;letter-spacing:0.02em;color:#8E8B85">TypeScript</li>
+        <li style="font-size:13px;letter-spacing:0.02em;color:#8E8B85">Motion</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 05 EVERY VIEWPORT — draggable responsive demonstration -->
+  <section ref="{{ rsSection }}" data-nav="05 — Every viewport" data-screen-label="05 Every viewport" style="padding:clamp(80px,13vh,160px) clamp(18px,4vw,64px) clamp(72px,11vh,140px);overflow:hidden">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(24px,4.6vh,52px)">
+      <div>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:clamp(16px,3vh,32px)">
+          <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent,#FF4B1F)">05</span>
+          <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">Responsive by construction</span>
+        </div>
+        <h2 style="margin:0;font-size:calc(clamp(36px,6vw,104px) * var(--dscale,1));line-height:0.9;font-weight:600;letter-spacing:-0.04em">ONE DESIGN.<br />EVERY <em style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-0.005em;text-transform:lowercase">viewport<span style="color:var(--accent,#FF4B1F)">.</span></em></h2>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px">
+        <span style="font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">Drag the edge</span>
+        <div style="display:flex;align-items:baseline;gap:10px">
+          <span ref="{{ rsWidth }}" style="font-size:clamp(26px,3.2vw,48px);font-weight:600;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">1728</span>
+          <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85">px</span>
+          <span ref="{{ rsDevice }}" style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent,#FF4B1F)">Wide</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:8px 18px;padding-bottom:12px;border-bottom:1px solid #242424;margin-bottom:clamp(16px,3vh,28px)">
+      <button data-tick="390" onClick="{{ rsTick }}" style="appearance:none;background:none;border:0;padding:4px 0;margin:0;color:#8E8B85;font-family:inherit;font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;transition:color 300ms ease" style-hover="color:#F5F3ED">390 Mobile</button>
+      <button data-tick="768" onClick="{{ rsTick }}" style="appearance:none;background:none;border:0;padding:4px 0;margin:0;color:#8E8B85;font-family:inherit;font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;transition:color 300ms ease" style-hover="color:#F5F3ED">768 Tablet</button>
+      <button data-tick="1280" onClick="{{ rsTick }}" style="appearance:none;background:none;border:0;padding:4px 0;margin:0;color:#8E8B85;font-family:inherit;font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;transition:color 300ms ease" style-hover="color:#F5F3ED">1280 Desktop</button>
+      <button data-tick="1728" onClick="{{ rsTick }}" style="appearance:none;background:none;border:0;padding:4px 0;margin:0;color:#8E8B85;font-family:inherit;font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;transition:color 300ms ease" style-hover="color:#F5F3ED">1728 Wide</button>
+    </div>
+
+    <div ref="{{ rsWrap }}" style="position:relative;width:100%">
+      <div style="position:absolute;inset:0;border:1px solid #141414;background:repeating-linear-gradient(90deg,#111111 0 1px,transparent 1px 56px);pointer-events:none"></div>
+      <span style="position:absolute;right:10px;bottom:10px;font-size:9px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:#2A2A2A;white-space:nowrap;pointer-events:none">Max 1728</span>
+      <div ref="{{ rsFrame }}" style="position:relative;width:100%;height:clamp(300px,48vh,540px);overflow:hidden;background:#0C0C0C;border:1px solid #242424">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px clamp(12px,1.6vw,22px);border-bottom:1px solid #1C1C1C">
+          <span style="display:flex;align-items:center;gap:8px;font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;white-space:nowrap">
+            <span style="width:4px;height:4px;border-radius:50%;background:var(--accent,#FF4B1F)"></span>SafeRoad
+          </span>
+          <div ref="{{ rsNav }}" style="display:flex;gap:clamp(10px,1.4vw,22px)">
+            <span style="font-size:9px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85">Courses</span>
+            <span style="font-size:9px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85">Pricing</span>
+            <span style="font-size:9px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85">Contact</span>
+          </div>
+          <span ref="{{ rsBurger }}" style="display:none;font-size:13px;line-height:1;color:#8E8B85">☰</span>
+        </div>
+        <div style="padding:clamp(14px,2vw,26px)">
+          <h4 ref="{{ rsHead }}" style="margin:0;font-size:38px;line-height:0.92;font-weight:600;letter-spacing:-0.035em;transition:font-size 220ms ease">DRIVE WITH <em style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;text-transform:lowercase">confidence.</em></h4>
+          <div ref="{{ rsGrid }}" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(8px,1vw,14px);margin-top:clamp(14px,2vw,26px)">
+            <div style="position:relative;overflow:hidden;background:#111111;aspect-ratio:4/3"><img src="assets/saferoad-desktop.png" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 0%" /></div>
+            <div style="display:flex;flex-direction:column;justify-content:space-between;gap:10px;aspect-ratio:4/3;padding:12px;border:1px solid #1C1C1C">
+              <span style="font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent,#FF4B1F)">01</span>
+              <span style="font-size:12px;line-height:1.35;color:#8E8B85">Category B, in Polish, Ukrainian and English.</span>
+            </div>
+            <div style="position:relative;overflow:hidden;background:#111111;aspect-ratio:4/3"><img src="assets/saferoad-phone.png" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 20%" /></div>
+          </div>
+        </div>
+        <div style="position:absolute;left:0;right:0;bottom:0;height:70px;background:linear-gradient(180deg,rgba(12,12,12,0) 0%,#0C0C0C 82%);pointer-events:none"></div>
+      </div>
+      <div ref="{{ rsHandle }}" onPointerDown="{{ rsDown }}" onKeyDown="{{ rsKey }}" tabIndex="0" role="slider" aria-label="Preview width" style="position:absolute;top:0;bottom:0;left:100%;width:32px;margin-left:-16px;display:flex;align-items:center;justify-content:center;cursor:ew-resize;touch-action:none;z-index:4">
+        <span style="position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--accent,#FF4B1F)"></span>
+        <span style="position:relative;width:9px;height:48px;background:#080808;border:1px solid var(--accent,#FF4B1F)"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 ABOUT -->
+  <section id="about" data-nav="06 — About" data-screen-label="06 About" style="padding:clamp(64px,10vh,130px) 0">
+    <div style="display:flex;flex-wrap:wrap;align-items:stretch;gap:clamp(24px,4.4vw,72px);padding:0 clamp(18px,4vw,64px)">
+      <div ref="{{ aboutWrap }}" data-reveal="mask" style="flex:1 1 300px;min-width:0;overflow:hidden;background:#111111">
+        <img ref="{{ aboutImg }}" src="assets/about-bw.png" alt="Dawid Bubnow portrait" style="width:100%;height:100%;min-height:clamp(300px,54vh,620px);object-fit:cover;object-position:52% 22%;filter:grayscale(1) contrast(1.06);will-change:transform" />
+      </div>
+      <div style="flex:1 1 380px;min-width:0;display:flex;flex-direction:column;justify-content:space-between;gap:clamp(26px,5vh,56px)">
+        <div style="display:flex;align-items:center;gap:14px">
+          <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent,#FF4B1F)">06</span>
+          <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85">About</span>
+        </div>
+        <h2 style="margin:0;font-size:calc(clamp(36px,5.2vw,92px) * var(--dscale,1));line-height:0.92;font-weight:600;letter-spacing:-0.04em">DESIGNER'S <em style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-0.005em;text-transform:lowercase">eye<span style="color:var(--accent,#FF4B1F)">.</span></em><br />DEVELOPER'S <em style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-0.005em;text-transform:lowercase">precision<span style="color:var(--accent,#FF4B1F)">.</span></em></h2>
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <p style="margin:0;max-width:40ch;font-size:clamp(15px,1.5vw,20px);line-height:1.45;color:#F2F0EA;text-wrap:pretty">I design and build digital experiences where visual identity and frontend execution are treated as one discipline.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:12px clamp(20px,4vw,56px);padding-top:18px;border-top:1px solid #242424">
+            <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">Based in Warsaw</span>
+            <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">Working remotely</span>
+            <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">EN / PL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 CONTACT -->
+  <section id="contact" data-nav="07 — Contact" data-screen-label="07 Contact" style="padding:clamp(88px,15vh,180px) clamp(18px,4vw,64px) clamp(36px,6vh,72px)">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:clamp(32px,6vh,72px)">
+      <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent,#FF4B1F)">07</span>
+      <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85">Contact</span>
+    </div>
+    <h2 style="margin:0;font-size:calc(clamp(44px,9.2vw,164px) * var(--dscale,1));line-height:0.86;font-weight:600;letter-spacing:-0.045em">LET'S BUILD<br />SOMETHING <em style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-0.005em;text-transform:lowercase">memorable<span style="color:var(--accent,#FF4B1F)">.</span></em></h2>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:28px clamp(28px,5vw,72px);margin-top:clamp(44px,8vh,100px)">
+      <a ref="{{ ctaRef }}" href="mailto:daveditcreation@gmail.com" onMouseEnter="{{ ctaIn }}" onMouseLeave="{{ ctaOut }}" style="display:inline-flex;align-items:center;gap:16px;padding:clamp(16px,2vw,24px) clamp(22px,3vw,36px);border:1px solid #242424;font-size:clamp(13px,1.2vw,15px);font-weight:600;letter-spacing:0.16em;text-transform:uppercase;transition:border-color 300ms ease,background 400ms cubic-bezier(.16,1,.3,1),color 300ms ease,transform 500ms cubic-bezier(.16,1,.3,1);will-change:transform;white-space:nowrap" style-hover="border-color:var(--accent,#FF4B1F);background:var(--accent,#FF4B1F);color:#080808">Start a project <span ref="{{ ctaArrow }}" style="display:inline-block;transition:transform 420ms cubic-bezier(.16,1,.3,1)">→</span></a>
+      <a ref="{{ mailRef }}" href="mailto:daveditcreation@gmail.com" style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;border-bottom:1px solid #242424;padding-bottom:4px;transition:color 300ms ease,border-color 300ms ease;white-space:nowrap;letter-spacing:0.12em" style-hover="color:#F5F3ED;border-color:var(--accent,#FF4B1F)">daveditcreation@gmail.com</a>
+    </div>
+  </section>
+
+  <footer style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;padding:18px clamp(18px,4vw,64px);border-top:1px solid #242424">
+    <span style="font-size:10px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">Dawid Bubnow — 2026</span>
+    <span style="font-size:10px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">Designed &amp; built in Warsaw</span>
+    <a href="#top" style="font-size:10px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85;white-space:nowrap">Back to top ↑</a>
+  </footer>
+
+  <!-- CASE OVERLAY -->
+  <sc-if value="{{ openProject }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:100;background:#080808;overflow-y:auto;animation:dbUp 420ms cubic-bezier(.16,1,.3,1) both">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px clamp(18px,4vw,64px);border-bottom:1px solid #242424;position:sticky;top:0;background:#080808;z-index:2">
+        <span style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent,#FF4B1F)">{{ openProject.index }}</span>
+        <button onClick="{{ closeProject }}" style="appearance:none;background:none;border:1px solid #242424;color:#F5F3ED;font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;padding:10px 16px;cursor:pointer;transition:border-color 260ms ease" style-hover="border-color:var(--accent,#FF4B1F)">Close ✕</button>
+      </div>
+      <div style="padding:clamp(40px,8vh,96px) clamp(18px,4vw,64px) clamp(52px,9vh,120px)">
+        <h2 style="margin:0;font-size:calc(clamp(52px,11vw,200px) * var(--dscale,1));line-height:0.84;font-weight:600;letter-spacing:-0.045em">{{ openProject.name }}</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:12px clamp(20px,4vw,64px);margin-top:clamp(24px,4vh,48px);padding-top:16px;border-top:1px solid #242424">
+          <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85">{{ openProject.label }}</span>
+          <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85">{{ openProject.discipline }}</span>
+          <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85">{{ openProject.year }}</span>
+          <span style="font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#8E8B85">{{ openProject.link }}</span>
+        </div>
+        <p style="margin:clamp(32px,6vh,76px) 0 0;max-width:24ch;font-size:calc(clamp(24px,3.4vw,56px) * var(--dscale,1));line-height:1.02;font-weight:600;letter-spacing:-0.03em">{{ openProject.statement }}</p>
+        <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:clamp(16px,2.6vw,40px);margin-top:clamp(40px,7vh,100px)">
+          {{ openShots }}
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#FF4B1F&quot;,&quot;options&quot;:[&quot;#FF4B1F&quot;,&quot;#C93416&quot;,&quot;#E8DFD0&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Identity&quot;},&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;daveditcreation@gmail.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Identity&quot;},&quot;motion&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;full&quot;,&quot;restrained&quot;,&quot;off&quot;],&quot;default&quot;:&quot;full&quot;,&quot;tsType&quot;:&quot;'full' | 'restrained' | 'off'&quot;,&quot;section&quot;:&quot;Interaction&quot;},&quot;displayScale&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.85,&quot;max&quot;:1.15,&quot;step&quot;:0.01,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Typography&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const vw = typeof window !== 'undefined' ? window.innerWidth : 1440;
+    this.state = { vw, open: null };
+    this.refs2 = {};
+    this.rsW = null;
+    this.projects = [
+      {
+        index: '01 / 02', name: 'SAFEROAD', label: 'Driving school',
+        discipline: 'Web design / Frontend development', year: '2026', link: 'szkolasr.pl',
+        statement: 'A driving-school site rebuilt around one decision: clarity before persuasion.',
+        desktop: 'assets/saferoad-desktop.png', phone: 'assets/saferoad-phone.png'
+      },
+      {
+        index: '02 / 02', name: 'FORGE', label: 'Concept project',
+        discipline: 'Product design / Frontend', year: '2026', link: 'Concept — not published',
+        statement: 'A habit app where the reward is earned, not ticked.',
+        desktop: 'assets/forge-desktop.png', phone: 'assets/forge-phone.png'
+      }
+    ];
+  }
+
+  ref(name) {
+    if (!this.refs2[name]) this.refs2[name] = (el) => { this.refs2[name + '_el'] = el; };
+    return this.refs2[name];
+  }
+  el(n) { return this.refs2[n + '_el']; }
+
+  componentDidMount() {
+    if (this.props.accent) document.documentElement.style.setProperty('--accent', this.props.accent);
+    if (this.props.displayScale) document.documentElement.style.setProperty('--dscale', String(this.props.displayScale));
+    this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.motion = this.props.motion || 'full';
+    this.touch = window.matchMedia('(hover: none)').matches;
+    this.applyEmail();
+
+    this.onResize = () => {
+      const w = window.innerWidth;
+      if ((w < 760) !== (this.state.vw < 760) || Math.abs(w - this.state.vw) > 40) this.setState({ vw: w });
+      if (w >= 760 && this.menuOn) this.setMenu(false);
+      this.rsInit();
+      this.scrollFx();
+    };
+    this.onResize();
+    setTimeout(this.onResize, 80);
+    setTimeout(this.onResize, 500);
+    window.addEventListener('load', this.onResize);
+    // width-only: the demo reflow changes document height, which would otherwise feed back forever
+    if ('ResizeObserver' in window) {
+      this.lastROW = document.documentElement.clientWidth;
+      this.ro = new ResizeObserver(() => {
+        const w = document.documentElement.clientWidth;
+        if (w === this.lastROW) return;
+        this.lastROW = w;
+        this.onResize();
+      });
+      this.ro.observe(document.documentElement);
+    }
+    this.onScroll = () => {
+      const now = (window.performance && performance.now()) || Date.now();
+      if (now - (this.lastFx || 0) < 14) {
+        clearTimeout(this.fxT);
+        this.fxT = setTimeout(() => this.scrollFx(), 24);
+        return;
+      }
+      this.lastFx = now;
+      this.scrollFx();
+    };
+    window.addEventListener('resize', this.onResize);
+    window.addEventListener('scroll', this.onScroll, { passive: true, capture: true });
+    if (this.motion !== 'off' && !this.reduced && !this.touch) {
+      this.onMove = (e) => this.pointerFx(e);
+      window.addEventListener('pointermove', this.onMove, { passive: true });
+    }
+    this.onKey = (e) => {
+      if (e.key !== 'Escape') return;
+      if (this.menuOn) this.setMenu(false);
+      else if (this.state.open !== null) this.setState({ open: null });
+    };
+    window.addEventListener('keydown', this.onKey);
+
+    this.navSections = Array.from(document.querySelectorAll('[data-nav]'));
+    this.armReveals();
+    this.scrollFx();
+    setTimeout(() => this.scrollFx(), 60);
+    setTimeout(() => this.scrollFx(), 400);
+  }
+
+  componentDidUpdate() { this.applyEmail(); this.rsInit(); }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('scroll', this.onScroll, { capture: true });
+    window.removeEventListener('keydown', this.onKey);
+    if (this.onMove) window.removeEventListener('pointermove', this.onMove);
+    window.removeEventListener('load', this.onResize);
+    if (this.ro) this.ro.disconnect();
+    document.body.style.overflow = '';
+  }
+
+  /* contactEmail is a prop so a real domain address can replace the placeholder without touching markup */
+  applyEmail() {
+    const mail = this.props.contactEmail;
+    if (!mail) return;
+    const m = this.el('mail'), c = this.el('cta');
+    if (m) { m.textContent = mail; m.setAttribute('href', 'mailto:' + mail); }
+    if (c) c.setAttribute('href', 'mailto:' + mail);
+  }
+
+  /* ---- mobile menu ---- */
+  setMenu(on) {
+    const m = this.el('menu');
+    this.menuOn = on;
+    if (!m) return;
+    m.style.pointerEvents = on ? 'auto' : 'none';
+    m.style.opacity = on ? '1' : '0';
+    m.style.clipPath = on ? 'inset(0 0 0% 0)' : 'inset(0 0 100% 0)';
+    Array.prototype.forEach.call(m.querySelectorAll('[data-menu-item]'), (it, i) => {
+      it.style.transitionDelay = on ? (140 + i * 70) + 'ms' : '0ms';
+      it.style.opacity = on ? '1' : '0';
+      it.style.transform = on ? 'translateY(0)' : 'translateY(26px)';
+    });
+    document.body.style.overflow = on ? 'hidden' : '';
+  }
+
+  /* ---- masked entrances ---- */
+  armReveals() {
+    if (this.reduced || this.motion === 'off') return;
+    const h = window.innerHeight;
+    this.maskNodes = Array.from(document.querySelectorAll('[data-reveal="mask"]')).filter((n) => {
+      const r = n.getBoundingClientRect();
+      if (r.top < h * 0.85) return false;
+      n.style.transition = 'clip-path 1200ms cubic-bezier(.16,1,.3,1)';
+      n.style.clipPath = 'inset(0 0 100% 0)';
+      return true;
+    });
+    this.unhideAll = () => {
+      (this.maskNodes || []).forEach((n) => { n.style.clipPath = 'inset(0 0 0% 0)'; });
+      this.maskNodes = [];
+    };
+    const bail = () => { if (document.hidden) this.unhideAll(); };
+    setTimeout(bail, 1200);
+    document.addEventListener('visibilitychange', bail);
+  }
+
+  runReveals() {
+    if (!this.maskNodes || !this.maskNodes.length) return;
+    const h = window.innerHeight;
+    this.maskNodes = this.maskNodes.filter((n) => {
+      const r = n.getBoundingClientRect();
+      if (r.top < h * 0.86 && r.bottom > 0) { n.style.clipPath = 'inset(0 0 0% 0)'; return false; }
+      return true;
+    });
+  }
+
+  centered(el) {
+    const r = el.getBoundingClientRect(), h = window.innerHeight;
+    return Math.max(-1, Math.min(1, 1 - (r.top + r.height / 2) / (h / 2 + r.height / 2)));
+  }
+
+  /* ---- responsive demonstration ---- */
+  rsInit() {
+    const wrap = this.el('rsWrap'), frame = this.el('rsFrame');
+    if (!wrap || !frame) return;
+    const max = wrap.clientWidth;
+    if (!max) return;
+    const prevFrac = this.rsMax ? (this.rsW - this.rsMin) / Math.max(1, this.rsMax - this.rsMin) : 1;
+    this.rsMax = max;
+    this.rsMin = Math.min(200, Math.round(max * 0.5));
+    this.rsW = this.rsMin + prevFrac * (this.rsMax - this.rsMin);
+    this.rsApply(false);
+  }
+
+  rsVirtual() {
+    const frac = (this.rsW - this.rsMin) / Math.max(1, this.rsMax - this.rsMin);
+    return Math.round(390 + frac * (1728 - 390));
+  }
+
+  rsApply(anim) {
+    const frame = this.el('rsFrame'), handle = this.el('rsHandle');
+    if (!frame || this.rsW == null) return;
+    const t = anim ? 'width 760ms cubic-bezier(.16,1,.3,1)' : 'none';
+    frame.style.transition = t;
+    frame.style.width = Math.round(this.rsW) + 'px';
+    if (handle) {
+      handle.style.transition = anim ? 'left 760ms cubic-bezier(.16,1,.3,1)' : 'none';
+      handle.style.left = Math.round(this.rsW) + 'px';
+    }
+    const v = this.rsVirtual();
+    const w = this.el('rsWidth'), dev = this.el('rsDevice');
+    if (w && w.textContent !== String(v)) w.textContent = String(v);
+    const name = v < 560 ? 'Mobile' : v < 1040 ? 'Tablet' : v < 1500 ? 'Desktop' : 'Wide';
+    if (dev && dev.textContent !== name) dev.textContent = name;
+    if (handle) handle.setAttribute('aria-valuenow', String(v));
+
+    const grid = this.el('rsGrid'), nav = this.el('rsNav'), burger = this.el('rsBurger'), head = this.el('rsHead');
+    const cols = v >= 1040 ? 3 : v >= 620 ? 2 : 1;
+    if (grid) grid.style.gridTemplateColumns = 'repeat(' + cols + ',minmax(0,1fr))';
+    if (nav) nav.style.display = v >= 620 ? 'flex' : 'none';
+    if (burger) burger.style.display = v >= 620 ? 'none' : 'block';
+    if (head) {
+      head.style.fontSize = (v >= 1300 ? 44 : v >= 1040 ? 36 : v >= 620 ? 28 : 22) + 'px';
+      head.style.maxWidth = v >= 620 ? '16ch' : '11ch';
+    }
+    const sec = this.el('rsSection');
+    if (sec) {
+      Array.prototype.forEach.call(sec.querySelectorAll('[data-tick]'), (b) => {
+        const on = Math.abs(+b.getAttribute('data-tick') - v) < 60;
+        b.style.color = on ? 'var(--accent,#FF4B1F)' : '#8E8B85';
+      });
+    }
+  }
+
+  rsDown(e) {
+    const wrap = this.el('rsWrap'), handle = this.el('rsHandle');
+    if (!wrap) return;
+    e.preventDefault();
+    if (handle && handle.focus) handle.focus();
+    if (handle && handle.setPointerCapture && e.pointerId != null) {
+      try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+    }
+    const left = wrap.getBoundingClientRect().left;
+    const move = (ev) => {
+      this.rsW = Math.max(this.rsMin, Math.min(this.rsMax, ev.clientX - left));
+      this.rsApply(false);
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', up);
+    };
+    window.addEventListener('pointermove', move, { passive: true });
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', up);
+  }
+
+  rsKey(e) {
+    const step = e.shiftKey ? 80 : 24;
+    if (e.key === 'ArrowLeft') this.rsW = Math.max(this.rsMin, this.rsW - step);
+    else if (e.key === 'ArrowRight') this.rsW = Math.min(this.rsMax, this.rsW + step);
+    else if (e.key === 'Home') this.rsW = this.rsMin;
+    else if (e.key === 'End') this.rsW = this.rsMax;
+    else return;
+    e.preventDefault();
+    this.rsApply(true);
+  }
+
+  rsTick(e) {
+    const v = +e.currentTarget.getAttribute('data-tick');
+    const frac = (v - 390) / (1728 - 390);
+    this.rsW = this.rsMin + frac * (this.rsMax - this.rsMin);
+    this.rsApply(true);
+  }
+
+  scrollFx() {
+    const h = window.innerHeight;
+    const doc = document.documentElement;
+
+    const bar = this.el('progress');
+    if (bar) {
+      const max = (doc.scrollHeight - h) || 1;
+      bar.style.width = Math.max(0, Math.min(1, window.scrollY / max)) * 100 + '%';
+    }
+
+    const nav = this.el('nav');
+    if (nav) {
+      const past = window.scrollY > h * 0.6;
+      nav.style.padding = past ? '15px clamp(18px,4vw,64px)' : '24px clamp(18px,4vw,64px)';
+      nav.style.background = past ? 'rgba(8,8,8,0.92)' : 'rgba(8,8,8,0)';
+      nav.style.borderBottomColor = past ? '#242424' : 'rgba(36,36,36,0)';
+    }
+    const label = this.el('navState');
+    if (label && this.navSections) {
+      let active = this.navSections[0];
+      this.navSections.forEach((s) => { if (s.getBoundingClientRect().top <= h * 0.4) active = s; });
+      const t = active.getAttribute('data-nav');
+      if (label.textContent !== t) label.textContent = t;
+    }
+
+    if (this.reduced || this.motion === 'off') return;
+    const soft = this.motion === 'restrained' ? 0.45 : 1;
+    this.runReveals();
+
+    // hero: type separates from the figure as you leave
+    const a = this.el('wordA'), b = this.el('wordB'), fig = this.el('heroFig');
+    if (a && b) {
+      const p = Math.max(0, Math.min(1, window.scrollY / h));
+      const drift = (this.px || 0) * 10;
+      a.style.transform = 'translate3d(' + (-p * 58 * soft + drift) + 'px,' + (p * -40) + 'px,0)';
+      b.style.transform = 'translate3d(' + (-p * 26 * soft + drift * 1.7) + 'px,' + (p * -40) + 'px,0)';
+      const rule = this.el('heroRule');
+      if (rule) rule.style.transform = 'translate3d(' + (drift * 2.2) + 'px,' + (p * -40) + 'px,0)';
+      if (fig) fig.style.transform = 'translate3d(' + (drift * -1.1) + 'px,' + (p * 58) + 'px,0) scale(' + (1 - p * 0.028) + ')';
+    }
+
+    // manifesto: opposing settle
+    const mA = this.el('manA'), mB = this.el('manB');
+    if (mA && mB && mA.parentElement) {
+      // line A is flush left, line B flush right: both may only travel INWARD, so nothing can ever clip
+      const k = Math.abs(this.centered(mA));
+      const amt = 52 * soft * k;
+      mA.style.transform = 'translate3d(' + amt + 'px,0,0)';
+      mB.style.transform = 'translate3d(' + (-amt) + 'px,0,0)';
+    }
+
+    const p1 = this.el('p1Mask'), p1d = this.el('p1Desktop'), p1p = this.el('p1Phone');
+    if (p1 && p1d) {
+      const c = this.centered(p1);
+      p1d.style.transform = 'translate3d(0,' + (c * -38 * soft - 14) + 'px,0) scale(' + (this.p1Hover ? 1.04 : 1) + ')';
+      if (p1p) p1p.style.transform = 'translate3d(0,' + (c * 78 * soft + (this.p1Hover ? -18 : 0)) + 'px,0)';
+    }
+    const p2 = this.el('p2Mask'), p2d = this.el('p2Desktop'), p2p = this.el('p2Phone');
+    if (p2 && p2d) {
+      const c = this.centered(p2);
+      p2d.style.transform = 'translate3d(' + (c * -26 * soft) + 'px,0,0) scale(' + (this.p2Hover ? 1.05 : 1.02) + ')';
+      if (p2p) p2p.style.transform = 'translate3d(0,' + (c * -30 * soft) + 'px,0) scale(' + (this.p2Hover ? 1.05 : 1) + ')';
+    }
+
+    // design x code: cross, align, resolve
+    const sec = this.el('dxcSection'), dA = this.el('dxcDesign'), dB = this.el('dxcCode'), dX = this.el('dxcX');
+    if (sec && dA && dB) {
+      const c = this.centered(sec);
+      const amt = Math.min(window.innerWidth * 0.2, 280) * soft;
+      dA.style.transform = 'translate3d(' + (-c * amt) + 'px,0,0)';
+      dB.style.transform = 'translate3d(' + (c * amt) + 'px,0,0)';
+      const near = 1 - Math.min(1, Math.abs(c) / 0.55);
+      dB.style.color = near > 0.85 ? '#F2F0EA' : '#8E8B85';
+      if (dX) {
+        dX.style.transform = 'rotate(' + (c * 90) + 'deg) scale(' + (0.9 + near * 0.25) + ')';
+        dX.style.opacity = String(0.45 + near * 0.55);
+      }
+    }
+
+    const aw = this.el('aboutWrap'), ai = this.el('aboutImg');
+    if (aw && ai) {
+      const r = aw.getBoundingClientRect();
+      if (r.top < h * 1.1 && r.bottom > -h * 0.1) {
+        const c = this.centered(aw);
+        ai.style.transform = 'scale(' + (1.08 - (1 - Math.abs(c)) * 0.08) + ') translate3d(0,' + (c * -20 * soft) + 'px,0)';
+      }
+    }
+
+  }
+
+  pointerFx(e) {
+    const w = window.innerWidth;
+    this.px = e.clientX / w - 0.5;
+    this.py = e.clientY / window.innerHeight - 0.5;
+    if (w >= 760 && window.scrollY < window.innerHeight) this.scrollFx();
+
+    const cur = this.el('cursor'), lab = this.el('cursorLabel');
+    if (cur && w >= 900) {
+      const over = e.target && e.target.closest ? e.target.closest('[data-cursor="view"]') : null;
+      cur.style.opacity = '1';
+      cur.style.transform = 'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0)';
+      const on = over && this.state.open === null;
+      cur.style.width = on ? '88px' : '10px';
+      cur.style.height = on ? '88px' : '10px';
+      cur.style.margin = on ? '-44px 0 0 -44px' : '-5px 0 0 -5px';
+      if (lab) lab.style.opacity = on ? '1' : '0';
+    }
+
+    const cta = this.el('cta');
+    if (cta && w >= 760) {
+      const r = cta.getBoundingClientRect();
+      const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+      cta.style.transform = Math.hypot(dx, dy) < 240 ? 'translate3d(' + dx * 0.09 + 'px,' + dy * 0.11 + 'px,0)' : 'translate3d(0,0,0)';
+    }
+  }
+
+  hover(which, on) {
+    this[which + 'Hover'] = on;
+    const t = this.el(which + 'Title'), c = this.el(which + 'Cta');
+    if (t) t.style.letterSpacing = on ? '-0.055em' : '-0.04em';
+    if (c) { c.style.gap = on ? '16px' : '8px'; c.style.borderColor = on ? 'var(--accent,#FF4B1F)' : '#242424'; }
+    this.scrollFx();
+  }
+
+  renderVals() {
+    const isMobile = this.state.vw < 760;
+    const open = this.state.open;
+    return {
+      isMobile, isDesktop: !isMobile,
+      openProject: open === null ? null : this.projects[open],
+      openShots: open === null ? null : React.createElement(React.Fragment, null,
+        React.createElement('img', { src: this.projects[open].desktop, alt: '', style: { flex: '1 1 520px', minWidth: 0, width: '100%', height: 'auto', background: '#111111' } }),
+        React.createElement('img', { src: this.projects[open].phone, alt: '', style: { flex: '0 0 auto', width: 'clamp(140px,16vw,240px)', height: 'auto', border: '1px solid #242424', background: '#111111' } })
+      ),
+      openFirst: () => this.setState({ open: 0 }),
+      openSecond: () => this.setState({ open: 1 }),
+      closeProject: () => this.setState({ open: null }),
+      openMenu: () => this.setMenu(true),
+      closeMenu: () => this.setMenu(false),
+      p1In: () => this.hover('p1', true), p1Out: () => this.hover('p1', false),
+      p2In: () => this.hover('p2', true), p2Out: () => this.hover('p2', false),
+      ctaIn: () => { const a = this.el('ctaArrow'); if (a) a.style.transform = 'translateX(8px)'; },
+      ctaOut: () => { const a = this.el('ctaArrow'); if (a) a.style.transform = 'translateX(0)'; },
+      rsDown: (e) => this.rsDown(e), rsKey: (e) => this.rsKey(e), rsTick: (e) => this.rsTick(e),
+      cursorRef: this.ref('cursor'), cursorLabelRef: this.ref('cursorLabel'),
+      progressRef: this.ref('progress'), navRef: this.ref('nav'), navStateRef: this.ref('navState'),
+      menuRef: this.ref('menu'),
+      wordA: this.ref('wordA'), wordB: this.ref('wordB'), heroFig: this.ref('heroFig'), heroRule: this.ref('heroRule'),
+      manA: this.ref('manA'), manB: this.ref('manB'),
+      p1Root: this.ref('p1Root'), p1Mask: this.ref('p1Mask'), p1Desktop: this.ref('p1Desktop'),
+      p1Phone: this.ref('p1Phone'), p1Title: this.ref('p1Title'), p1Cta: this.ref('p1Cta'),
+      p2Root: this.ref('p2Root'), p2Mask: this.ref('p2Mask'), p2Desktop: this.ref('p2Desktop'),
+      p2PhoneWrap: this.ref('p2PhoneWrap'), p2Phone: this.ref('p2Phone'), p2Title: this.ref('p2Title'), p2Cta: this.ref('p2Cta'),
+      dxcSection: this.ref('dxcSection'), dxcDesign: this.ref('dxcDesign'), dxcCode: this.ref('dxcCode'), dxcX: this.ref('dxcX'),
+      rsSection: this.ref('rsSection'), rsWrap: this.ref('rsWrap'), rsFrame: this.ref('rsFrame'),
+      rsWidth: this.ref('rsWidth'), rsDevice: this.ref('rsDevice'), rsHandle: this.ref('rsHandle'),
+      rsNav: this.ref('rsNav'), rsBurger: this.ref('rsBurger'), rsGrid: this.ref('rsGrid'), rsHead: this.ref('rsHead'),
+      aboutWrap: this.ref('aboutWrap'), aboutImg: this.ref('aboutImg'),
+      ctaRef: this.ref('cta'), ctaArrow: this.ref('ctaArrow'), mailRef: this.ref('mail')
+    };
+  }
+}
+</script>
+</body>
+</html>

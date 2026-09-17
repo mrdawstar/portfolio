@@ -1,0 +1,67 @@
+.manifesto {
+  padding: clamp(96px, 17vh, 200px) var(--gutter) clamp(96px, 16vh, 190px);
+  /* `clip`, not `hidden`: it absorbs the lines while they are still travelling
+     without creating a scroll container. The settled offset is 0, so nothing
+     is ever clipped in the resting composition. */
+  overflow-x: clip;
+}
+
+.manifesto__index {
+  margin-bottom: clamp(40px, 7vh, 80px);
+}
+
+.manifesto__label {
+  font-weight: 500;
+}
+
+/* The row is the measuring box the travel is calculated against. */
+.manifesto__row {
+  display: flex;
+}
+
+.manifesto__row--end {
+  justify-content: flex-end;
+  margin-top: clamp(18px, 3.4vh, 46px);
+}
+
+.manifesto__line {
+  /* `max-width` in ch keeps the measure editorial; `width: max-content` with a
+     cap means the element reports its true width, which the travel maths needs */
+  max-width: min(15ch, 100%);
+  font-size: var(--fs-manifesto);
+  line-height: 0.9;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  will-change: transform;
+}
+
+.manifesto__line--right {
+  text-align: right;
+  color: var(--ink-soft);
+}
+
+.manifesto__line .serif {
+  text-transform: lowercase;
+}
+
+@media (max-width: 759px) {
+  .manifesto {
+    padding-block: clamp(76px, 12vh, 120px) clamp(72px, 11vh, 110px);
+  }
+
+  .manifesto__index {
+    margin-bottom: clamp(28px, 5vh, 48px);
+  }
+
+  .manifesto__line {
+    max-width: min(13ch, 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manifesto__line {
+    transform: none !important;
+  }
+}

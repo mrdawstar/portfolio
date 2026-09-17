@@ -1,0 +1,110 @@
+.dxc {
+  position: relative;
+  padding: clamp(72px, 11vh, 132px) 0 clamp(64px, 10vh, 120px);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.dxc__index {
+  padding: 0 var(--gutter);
+  margin-bottom: clamp(28px, 5vh, 60px);
+}
+
+/* Stacked: DESIGN high, cross centre, CODE low. Each row is centred, so the
+   two words converge on the same vertical axis as they settle. */
+.dxc__type {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2px, 0.6vh, 12px);
+  padding: 0 var(--gutter);
+}
+
+.dxc__word {
+  display: block;
+  font-size: var(--fs-dxc);
+  line-height: 0.82;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.dxc__word--muted {
+  color: var(--muted);
+  will-change: transform, color;
+  transition: color 300ms ease;
+}
+
+.dxc__cross {
+  flex: 0 0 auto;
+  /* square by definition */
+  width: var(--cross);
+  height: var(--cross);
+  /* In the stacked composition the cross sits on its own row between the two
+     words, so it only has to be square and centred in that row. */
+  font-size: var(--fs-dxc);
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.dxc__cross svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.dxc__cross line {
+  stroke: var(--accent);
+  stroke-width: 9;
+  stroke-linecap: square;
+  vector-effect: non-scaling-stroke;
+}
+
+/* the cross scales with the words, so the relationship holds at every width */
+.dxc__type {
+  --cross: calc(var(--fs-dxc) * 0.34);
+}
+
+.dxc__note {
+  max-width: 46ch;
+  margin: clamp(30px, 5vh, 64px) auto 0;
+  padding: 0 var(--gutter);
+  text-align: center;
+  font-size: clamp(13px, 1.1vw, 16px);
+  line-height: 1.5;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+@media (max-width: 759px) {
+  .dxc {
+    padding: clamp(60px, 9vh, 96px) 0 clamp(52px, 8vh, 88px);
+  }
+
+  .dxc__type {
+    gap: clamp(8px, 2.4vw, 14px);
+  }
+
+  .dxc__note {
+    font-size: 13px;
+    max-width: 34ch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dxc__word {
+    transform: none !important;
+  }
+
+  .dxc__word--muted {
+    color: var(--ink-soft);
+  }
+
+  .dxc__cross {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

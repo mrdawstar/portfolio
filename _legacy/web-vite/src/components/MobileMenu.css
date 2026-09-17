@@ -1,0 +1,245 @@
+/* The page behind recedes while the menu is open. Applied to <main> and the
+   footer rather than <body>, so the fixed menu layer is not transformed too. */
+.is-menu-open main,
+.is-menu-open > body > footer,
+.is-menu-open .footer {
+  transform: scale(0.94) translateY(-8px);
+  filter: brightness(0.5);
+  transition:
+    transform 900ms var(--ease),
+    filter 700ms ease;
+  transform-origin: 50% 0;
+}
+
+main,
+.footer {
+  transition:
+    transform 780ms var(--ease),
+    filter 620ms ease;
+  transform-origin: 50% 0;
+}
+
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 98;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 18px calc(30px + env(safe-area-inset-bottom));
+  background: var(--bg);
+  /* the layer itself wipes up from the bottom edge */
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 720ms var(--ease);
+}
+
+.menu--open {
+  clip-path: inset(0 0 0% 0);
+}
+
+/* a single accent hairline riding the leading edge of the wipe */
+.menu::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 720ms var(--ease);
+}
+
+.menu--open::after {
+  transform: scaleX(1);
+}
+
+.menu__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.menu--open .menu__top {
+  opacity: 1;
+  transition-delay: 180ms;
+}
+
+/* WEBBOSS stays the anchor while the menu is open */
+.menu__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu__brandText {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+.menu__dot {
+  flex: 0 0 auto;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.menu__close {
+  padding: 8px 0 8px 16px;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 300ms ease;
+}
+
+.menu__close:hover,
+.menu__close:focus-visible {
+  color: var(--ink);
+}
+
+.menu__nav {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1.2vh, 14px);
+  padding: clamp(24px, 6vh, 60px) 0;
+}
+
+.menu__item {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+/* the number trails the word it belongs to */
+.menu__num {
+  font-size: var(--fs-meta-sm);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 420ms ease,
+    transform 520ms var(--ease);
+}
+
+.menu--open .menu__num {
+  opacity: 1;
+  transform: translateY(0);
+  /* lands after its own word has arrived */
+  transition-delay: calc(360ms + var(--i) * 90ms);
+}
+
+/* overflow box: the word is clipped to its own line box and rises into it */
+.menu__mask {
+  display: block;
+  overflow: hidden;
+  /* room for descenders, clawed back so the line rhythm is unchanged */
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.menu__word {
+  display: block;
+  font-size: clamp(46px, 15.5vw, 84px);
+  line-height: 0.94;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  transform: translateY(105%);
+  transition: transform 760ms var(--ease);
+}
+
+.menu--open .menu__word {
+  transform: translateY(0);
+  transition-delay: calc(200ms + var(--i) * 90ms);
+}
+
+.menu__item:hover .menu__word,
+.menu__item:focus-visible .menu__word {
+  color: var(--accent);
+}
+
+.menu__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 480ms ease,
+    transform 620ms var(--ease);
+}
+
+.menu--open .menu__foot {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: calc(300ms + var(--i) * 80ms);
+}
+
+.menu__rule {
+  height: 1px;
+  background: var(--line);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 700ms var(--ease);
+}
+
+.menu--open .menu__rule {
+  transform: scaleX(1);
+  transition-delay: calc(340ms + var(--i) * 80ms);
+}
+
+.menu__footRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.menu__available {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+}
+
+/* Closing: run the choreography backwards, tighter than it opened, and drop
+   every stagger so nothing lingers behind the wipe. */
+.menu:not(.menu--open) .menu__word {
+  transform: translateY(105%);
+  transition-duration: 420ms;
+  transition-delay: 0ms;
+}
+
+.menu:not(.menu--open) .menu__num,
+.menu:not(.menu--open) .menu__foot,
+.menu:not(.menu--open) .menu__top {
+  transition-duration: 220ms;
+  transition-delay: 0ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-menu-open main,
+  .is-menu-open .footer {
+    transform: none;
+    filter: brightness(0.5);
+  }
+
+  .menu__word,
+  .menu__num,
+  .menu__foot,
+  .menu__top,
+  .menu__rule,
+  .menu::after {
+    transform: none;
+    opacity: 1;
+  }
+}

@@ -1,0 +1,354 @@
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 0 clamp(20px, 3.2vw, 40px);
+  overflow: hidden;
+}
+
+/* The reference stood the figure against a slightly lifted panel. With the
+   matted cutout that panel is exactly what makes the portrait look pasted on:
+   it is #0c0c0c against a #080808 page, so it draws a hard tonal rectangle
+   down the middle of the hero. The ground is now a single flat black and the
+   figure simply sits on it. */
+.hero__plate {
+  display: none;
+}
+
+.hero__type {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(80px, 12vh, 140px) 0 clamp(110px, 16vh, 180px) var(--gutter);
+  pointer-events: none;
+}
+
+.hero__kicker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: clamp(16px, 3vh, 30px);
+  animation: dbUp 900ms var(--ease) 120ms both;
+}
+
+.hero__kicker .meta {
+  font-weight: 500;
+  letter-spacing: 0.2em;
+}
+
+.hero__yearEm {
+  font-size: 15px;
+  text-transform: none;
+}
+
+.hero__name {
+  display: contents;
+}
+
+/* wrapper: scroll-driven only */
+.hero__shift {
+  display: block;
+  will-change: transform;
+}
+
+.hero__shift--a {
+  margin-left: -0.055em;
+}
+
+.hero__shift--b {
+  margin-left: clamp(16px, 5.2vw, 116px);
+}
+
+/* inner: entrance only */
+.hero__word {
+  display: block;
+  font-size: var(--fs-hero);
+  line-height: 0.8;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.hero__word--a {
+  animation: dbInL 1200ms var(--ease) 620ms both;
+}
+
+.hero__word--b {
+  color: var(--ink-soft);
+  animation: dbInR 1200ms var(--ease) 780ms both;
+}
+
+.hero__ruleShift {
+  display: block;
+  margin-top: clamp(20px, 4vh, 42px);
+  will-change: transform;
+}
+
+.hero__accentRule {
+  display: block;
+  width: 70vw;
+  height: 1px;
+  background: var(--accent);
+  transform-origin: left;
+  animation: dbLine 1300ms var(--ease) 1060ms both;
+}
+
+/* The figure occludes the name: it must stay above .hero__type. */
+/* The matted cutout carries its own alpha, so the figure meets the page with
+   no rectangle and needs no gradient to hide one. `contain` keeps the whole
+   person in frame and the original proportions intact; it is anchored to the
+   bottom-right so the head clears the display type. */
+.hero__figure {
+  position: absolute;
+  right: clamp(-34px, -2.4vw, 0px);
+  bottom: 0;
+  z-index: 2;
+  height: min(92vh, 1000px);
+  width: auto;
+  max-width: 54vw;
+  object-fit: contain;
+  object-position: 100% 100%;
+  will-change: transform;
+  /* clip only — JS owns this element's transform */
+  animation: dbWipe 1500ms var(--ease) 240ms both;
+  /* The cutout keeps the shot's motion-blur trail to the left of the figure.
+     It is semi-transparent, so where it crosses BUBNOW it greys the letter
+     instead of occluding it cleanly. This ramp removes the trail only — the
+     region is already near-transparent, so it produces no visible edge (the
+     figure itself starts well right of the 20% stop). */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 20%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 20%);
+}
+
+.hero__foot {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 0 var(--gutter);
+}
+
+.hero__available {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  white-space: nowrap;
+  animation: dbUp 900ms var(--ease) 1240ms both;
+}
+
+.hero__dot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: dbPulse 2600ms ease-in-out infinite;
+}
+
+.hero__cta {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 4px;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--line);
+  transition: border-color 300ms ease, gap 400ms ease;
+  animation: dbUp 900ms var(--ease) 1380ms both;
+}
+
+.hero__cta:hover {
+  border-bottom-color: var(--accent);
+  gap: 18px;
+}
+
+/* ——————— mobile: a different composition, not a squeezed desktop ———————
+   The portrait sits behind the name rather than above it. The name is allowed
+   to cross onto the image — that overlap is the composition — and a veil
+   behind the type guarantees the letters stay legible over the photograph. */
+.hero--mobile {
+  justify-content: flex-end;
+  padding-bottom: calc(clamp(18px, 4vh, 34px) + env(safe-area-inset-bottom));
+}
+
+.hero__mobileFigure {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.hero__mobileImg {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: auto;
+  max-width: 132%;
+  height: 84%;
+  object-fit: contain;
+  object-position: 50% 0%;
+  will-change: transform;
+  /* 1: figure wipes in — clip only, JS owns the transform */
+  animation: dbWipe 1500ms var(--ease) 120ms both;
+}
+
+/* lifts the ground under the display type without reading as a scrim */
+/* No rectangle left to hide — this only lifts the ground under the display
+   type where the figure's legs would otherwise compete with the letterforms. */
+.hero__mobileVeil {
+  position: absolute;
+  inset: auto 0 0;
+  height: 46%;
+  background: linear-gradient(
+    180deg,
+    rgb(8 8 8 / 0) 0%,
+    rgb(8 8 8 / 0.55) 42%,
+    rgb(8 8 8 / 0.88) 74%,
+    var(--bg) 100%
+  );
+  pointer-events: none;
+}
+
+.hero__mobileBody {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2.6vh, 22px);
+  padding: 0 18px;
+}
+
+.hero__mobileName {
+  display: flex;
+  flex-direction: column;
+}
+
+/* overflow box per line — the word travels, the box does not.
+   The box also carries the scroll-driven depth, keeping the two off one
+   element so neither overwrites the other. */
+.hero__mMask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+  will-change: transform;
+}
+
+.hero__mWord {
+  display: block;
+  font-size: var(--fs-hero-mobile);
+  line-height: 0.86;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+
+/* 2: DAWID, 3: BUBNOW */
+.hero__mWord--a {
+  animation: dbRise 1100ms var(--ease) 620ms both;
+}
+
+.hero__mWord--b {
+  margin-left: 0.055em;
+  color: var(--ink-soft);
+  animation: dbRise 1100ms var(--ease) 780ms both;
+}
+
+/* 4: metadata, 5: CTA row (inherits, staggered by its own delay) */
+.hero__metaShift {
+  will-change: transform, opacity;
+}
+
+.hero__mobileMeta {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(9px, 1.6vh, 14px);
+  animation: dbUp 800ms var(--ease) 1120ms both;
+}
+
+.hero__rule {
+  height: 1px;
+  background: var(--line);
+  transform-origin: left;
+  animation: dbLine 900ms var(--ease) 1180ms both;
+}
+
+.hero__mobileRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hero__mobileRow--tight {
+  align-items: center;
+  animation: dbUp 800ms var(--ease) 1320ms both;
+}
+
+.hero__mobileRow .meta {
+  letter-spacing: 0.16em;
+}
+
+.hero__right {
+  text-align: right;
+}
+
+.hero--mobile .hero__available {
+  color: var(--ink);
+  letter-spacing: 0.16em;
+  animation: none;
+}
+
+.hero__workLink {
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 3px;
+  white-space: nowrap;
+  transition: border-color 300ms ease;
+}
+
+.hero__workLink:hover,
+.hero__workLink:focus-visible {
+  border-bottom-color: var(--accent);
+}
+
+@keyframes dbRise {
+  from {
+    transform: translateY(104%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* 430px has real estate 390 does not; spend it on the name */
+@media (min-width: 400px) and (max-width: 759px) {
+  .hero__mWord {
+    font-size: calc(clamp(64px, 21vw, 108px) * var(--dscale));
+  }
+}
+
+
+/* clip-only wipe: used wherever JS owns the element's transform */
+@keyframes dbWipe {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0% 0);
+  }
+}

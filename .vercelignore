@@ -1,0 +1,11 @@
+# Superseded implementations, kept in the repo for reference only.
+# Nothing in here is part of the build; delete the folder when you no longer
+# want it:  rm -rf _legacy
+_legacy
+
+# Source artwork the build does not read. `scripts/images.mjs` turns these into
+# public/img, and that output IS committed.
+captures
+references
+design
+*.png

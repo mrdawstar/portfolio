@@ -1,0 +1,136 @@
+.nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  padding: 24px var(--gutter);
+  background: rgb(8 8 8 / 0);
+  border-bottom: 1px solid rgb(36 36 36 / 0);
+  transition:
+    padding 500ms var(--ease),
+    background 500ms ease,
+    border-color 500ms ease;
+}
+
+.nav--condensed {
+  padding-block: 15px;
+  background: rgb(8 8 8 / 0.92);
+  border-bottom-color: var(--line);
+  backdrop-filter: blur(8px);
+}
+
+.nav__grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav__bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.nav__mark {
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.nav__dot {
+  flex: 0 0 auto;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: dbPulse 2600ms ease-in-out infinite;
+}
+
+/* The studio wordmark. Heavier and more tracked than any other label on the
+   page so it reads as a mark, not as a caption. */
+.nav__markText {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  /* the tracking adds a trailing gap; pull it back so the mark optically
+     aligns with the gutter */
+  margin-right: -0.3em;
+}
+
+.nav__state {
+  justify-self: center;
+  font-size: var(--fs-meta-sm);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.nav nav {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2.2vw, 32px);
+}
+
+.nav__link {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  padding-bottom: 3px;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-bottom: 1px solid transparent;
+  transition: color 300ms ease, border-color 300ms ease;
+}
+
+.nav__link:hover,
+.nav__link[aria-current] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.nav__linkNum {
+  font-size: 9px;
+  opacity: 0.5;
+}
+
+.nav__menuBtn {
+  flex: 0 0 auto;
+  padding: 8px 0 8px 16px;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 759px) {
+  .nav__markText {
+    font-size: 12px;
+    letter-spacing: 0.26em;
+  }
+}
+
+/* The running section indicator is the first thing to go when the bar tightens:
+   it is decorative, and the links are not. */
+@media (max-width: 1009px) {
+  .nav__state {
+    display: none;
+  }
+
+  .nav__grid {
+    grid-template-columns: 1fr auto;
+  }
+}

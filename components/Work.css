@@ -1,0 +1,534 @@
+/* ─────────────────────────────────────────────────────────────
+   SELECTED WORK — pinned stage, horizontal rail.
+   The section is tall; the stage inside is sticky. Vertical scroll is
+   translated into horizontal travel, measured from the rail's real width.
+   ───────────────────────────────────────────────────────────── */
+
+.work {
+  position: relative;
+  /* one viewport to pin + roughly one per project to travel through */
+  height: calc((var(--count, 5) * 78 + 30) * 1vh + 100svh);
+  background: var(--bg);
+}
+
+.work__stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  /* the whole viewport takes the active project's tone */
+  transition: background 700ms var(--ease);
+}
+
+/* ——— header ——— */
+.work__head {
+  position: relative;
+  z-index: 4;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding: clamp(78px, 11vh, 118px) var(--gutter) clamp(14px, 2.2vh, 26px);
+}
+
+.work__heading {
+  font-weight: 500;
+}
+
+/* the stage inverts its own chrome over a light scene */
+.work__stage[data-light] .meta,
+.work__stage[data-light] .work__counter {
+  color: #14110d;
+}
+
+.work__stage[data-light] .meta--accent {
+  color: var(--accent);
+}
+
+.work__counter {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  transition: color 700ms var(--ease);
+}
+
+.work__counterNow {
+  color: var(--accent);
+}
+
+.work__counterSep,
+.work__counterAll {
+  opacity: 0.45;
+}
+
+/* ——— rail ——— */
+.work__rail {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: stretch;
+  gap: clamp(14px, 1.6vw, 30px);
+  padding: 0 var(--gutter) clamp(30px, 5vh, 58px);
+  will-change: transform;
+}
+
+/* ——— progress ticks ——— */
+.work__progress {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: clamp(14px, 2.2vh, 24px);
+  z-index: 4;
+  display: flex;
+  gap: 6px;
+}
+
+.work__tick {
+  flex: 1 1 0;
+  height: 1px;
+  background: currentColor;
+  color: var(--muted);
+  opacity: 0.35;
+  transform-origin: left;
+  transition: opacity 500ms ease, background 500ms ease;
+}
+
+.work__tick.is-done {
+  opacity: 1;
+  background: var(--accent);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SCENE — one panel. Shared skeleton, five art directions.
+   ───────────────────────────────────────────────────────────── */
+
+.scene {
+  position: relative;
+  flex: 0 0 auto;
+  width: 78vw;
+  max-width: 1180px;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(20px, 2.6vh, 34px) clamp(20px, 2.4vw, 44px) clamp(18px, 2.4vh, 30px);
+  background: var(--scene-bg);
+  color: var(--scene-ink);
+  overflow: hidden;
+  /* depth: panels recede as they leave the centre of the stage */
+  transform: scale(calc(1 - (1 - var(--near, 1)) * 0.05));
+  transform-origin: center;
+}
+
+.scene__hit {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+}
+
+.scene__hair {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--scene-accent);
+  transform: scaleX(var(--in, 0));
+  transform-origin: left;
+  transition: transform 200ms linear;
+}
+
+/* ——— metadata row ——— */
+.scene__meta {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: baseline;
+  gap: clamp(12px, 1.6vw, 28px);
+  padding-bottom: clamp(12px, 1.8vh, 22px);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--scene-muted);
+  white-space: nowrap;
+}
+
+.scene__index {
+  font-weight: 700;
+  color: var(--scene-accent);
+  letter-spacing: 0.12em;
+}
+
+.scene__category {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scene__link,
+.scene__year {
+  margin-left: auto;
+}
+
+.scene__year {
+  margin-left: 0;
+}
+
+/* ——— imagery ——— */
+.scene__stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.scene__shot {
+  position: absolute;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--scene-ink) 8%, var(--scene-bg));
+  /* mask reveal, driven by how near the panel is to the stage centre */
+  clip-path: inset(0 calc((1 - var(--in, 1)) * 26%) 0 0);
+  transition: clip-path 260ms linear;
+}
+
+.scene__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* counter-move against the rail so the image floats inside its frame */
+  transform: translate3d(calc(var(--d, 0) * -48px), 0, 0) scale(1.06);
+  will-change: transform;
+}
+
+/* ——— footer type ——— */
+.scene__foot {
+  position: relative;
+  z-index: 3;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: baseline;
+  gap: clamp(14px, 2vw, 32px);
+  padding-top: clamp(12px, 1.8vh, 20px);
+}
+
+.scene__title {
+  font-size: clamp(30px, 4.4vw, 78px);
+  line-height: 0.9;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  /* typography crosses the panel as the rail moves */
+  transform: translate3d(calc(var(--d, 0) * -26px), 0, 0);
+}
+
+.scene__titleMask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+
+.scene__titleWord {
+  display: block;
+  transform: translateY(calc((1 - var(--in, 1)) * 108%));
+  transition: transform 420ms var(--ease);
+}
+
+.scene__tagline {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: clamp(12px, 1vw, 15px);
+  line-height: 1.4;
+  color: var(--scene-muted);
+  opacity: var(--in, 1);
+  transition: opacity 400ms ease;
+}
+
+.scene__cta {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 4px;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom: 1px solid color-mix(in srgb, var(--scene-ink) 25%, transparent);
+  transition: border-color 360ms ease, gap 360ms ease;
+}
+
+.scene__arrow {
+  color: var(--scene-accent);
+  transition: transform 360ms var(--ease);
+}
+
+.scene:hover .scene__cta {
+  gap: 16px;
+  border-bottom-color: var(--scene-accent);
+}
+
+.scene:hover .scene__arrow {
+  transform: translate(3px, -3px);
+}
+
+.scene:hover .scene__img {
+  transform: translate3d(calc(var(--d, 0) * -48px), 0, 0) scale(1.1);
+}
+
+.scene__img {
+  transition: transform 900ms var(--ease);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Five compositions. Same skeleton, different staging.
+   ───────────────────────────────────────────────────────────── */
+
+/* 01 ATELIER 27 — one architectural plate, full bleed, no phone */
+.scene--figure .scene__shot--desktop {
+  inset: 0;
+}
+
+.scene--figure .scene__shot--phone {
+  display: none;
+}
+
+.scene--figure .scene__foot {
+  margin-top: clamp(12px, 2vh, 20px);
+}
+
+/* 02 FORGE — cinematic plate with the phone breaking its lower edge */
+.scene--product .scene__shot--desktop {
+  inset: 0 clamp(90px, 13%, 210px) 0 0;
+}
+
+.scene--product .scene__shot--phone {
+  right: 0;
+  bottom: -6%;
+  width: clamp(120px, 15%, 230px);
+  aspect-ratio: 860 / 1864;
+  border: 1px solid color-mix(in srgb, var(--scene-ink) 18%, transparent);
+}
+
+/* 03 SAFEROAD — service shot with the phone inset high right */
+.scene--service .scene__shot--desktop {
+  inset: 0 0 clamp(26px, 5%, 60px) 0;
+}
+
+.scene--service .scene__shot--phone {
+  top: 8%;
+  right: clamp(16px, 3%, 44px);
+  width: clamp(104px, 12.5%, 190px);
+  aspect-ratio: 860 / 1864;
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.28);
+}
+
+/* 04 LAW — inverted: the phone leads, the desktop plate sits behind it */
+.scene--portrait .scene__shot--desktop {
+  inset: 0 0 0 clamp(150px, 26%, 330px);
+}
+
+.scene--portrait .scene__shot--phone {
+  left: 0;
+  top: 6%;
+  bottom: 6%;
+  width: clamp(130px, 23%, 300px);
+  border: 1px solid color-mix(in srgb, var(--scene-accent) 40%, transparent);
+}
+
+/* 05 ENGLISH — poster: generous cream margin around the plate */
+.scene--warm .scene__stage {
+  padding: clamp(10px, 2vh, 26px) 0;
+}
+
+.scene--warm .scene__shot--desktop {
+  inset: clamp(10px, 2vh, 26px) clamp(96px, 15%, 240px) clamp(10px, 2vh, 26px) 0;
+}
+
+.scene--warm .scene__shot--phone {
+  right: 0;
+  top: 16%;
+  width: clamp(112px, 13.5%, 208px);
+  aspect-ratio: 860 / 1864;
+  border: 1px solid color-mix(in srgb, var(--scene-ink) 14%, transparent);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MOBILE — no scroll-jacking. Scenes stack and cover one another.
+   ───────────────────────────────────────────────────────────── */
+
+.work--stacked {
+  height: auto;
+  padding-bottom: clamp(30px, 6vh, 60px);
+}
+
+.work__head--stacked {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 var(--gutter) 14px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: clamp(18px, 3vh, 32px);
+}
+
+.work__stack {
+  position: relative;
+}
+
+/* each scene pins, so the next one rides up and covers it */
+.work__sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  padding: clamp(66px, 9vh, 88px) 14px clamp(14px, 2.4vh, 24px);
+}
+
+.work__sticky .scene {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  transform: none;
+  border: 1px solid color-mix(in srgb, var(--scene-ink) 12%, transparent);
+  /* stacked scenes are always "near" — no rail to be far from */
+  --near: 1;
+  --d: 0;
+}
+
+@media (max-width: 759px) {
+  .scene {
+    padding: 16px 16px 14px;
+  }
+
+  .work .scene__meta {
+    gap: 10px;
+    font-size: var(--fs-meta-sm);
+    letter-spacing: 0.14em;
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+
+  /* the domain is the first thing to go when the row tightens */
+  .work .scene__link {
+    display: none;
+  }
+
+  .work .scene__foot {
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    align-items: baseline;
+  }
+
+  .work .scene__title {
+    font-size: clamp(24px, 7.4vw, 38px);
+    flex: 1 1 100%;
+    transform: none;
+  }
+
+  .work .scene__tagline {
+    flex: 1 1 auto;
+    font-size: 12px;
+  }
+
+  .work .scene__cta {
+    font-size: var(--fs-meta-sm);
+  }
+
+  .work .scene__img {
+    transform: none;
+    scale: 1;
+  }
+
+  .work .scene:hover .scene__img {
+    transform: none;
+  }
+
+  /* Mobile composition: both screenshots stack and stay legible.
+     The desktop captures are 2400x1500, so a 16/10 box shows the whole frame
+     with no crop at all — cropping a site screenshot to a portrait slot (what
+     the desktop staging does) leaves an unreadable fragment on a phone. */
+  .work .scene__stage {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    /* the per-scene desktop staging (e.g. the warm poster margin) does not
+       apply to the stacked composition */
+    padding: 0;
+  }
+
+  .work .scene__shot {
+    position: relative;
+    inset: auto;
+    clip-path: none;
+  }
+
+  .work .scene__shot--desktop {
+    flex: 0 0 auto;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+  }
+
+  /* An explicit width, not aspect-ratio: under `flex: 1 1 auto` in a column
+     the cross size does not resolve from the ratio, and the box ends up
+     narrower than the capture — which crops the mobile site sideways and cuts
+     its headline. A fixed width crops vertically instead, showing the top of
+     the page, which is the part worth showing. */
+  .work .scene__shot--phone {
+    /* zero basis, not auto: with `auto` the basis resolves from the image's
+       own intrinsic height and the box overflows the stage, pushing the phone
+       down under the title */
+    flex: 1 1 0;
+    min-height: 0;
+    width: min(48%, 196px);
+    align-self: center;
+    border: 1px solid color-mix(in srgb, var(--scene-ink) 16%, transparent);
+  }
+
+  .work .scene__shot--phone .scene__img {
+    object-position: 50% 0%;
+  }
+
+  /* on mobile every scene shows both captures, including this one */
+  .work .scene--figure .scene__shot--phone {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work {
+    height: auto;
+  }
+
+  .work__stage {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+
+  .work__rail {
+    flex-direction: column;
+    transform: none !important;
+    gap: clamp(20px, 4vh, 48px);
+  }
+
+  .scene {
+    width: 100%;
+    max-width: none;
+    min-height: 62vh;
+    transform: none;
+    --near: 1;
+    --in: 1;
+    --d: 0;
+  }
+
+  .work__sticky {
+    position: static;
+    height: auto;
+    min-height: 68vh;
+  }
+}

@@ -1,0 +1,42 @@
+/* Design tokens lifted verbatim from the approved reference (Dawid Bubnow.dc.html).
+   Values are intentionally literal: the clamp() ramps ARE the art direction. */
+:root {
+  /* ink + ground */
+  --bg: #080808;
+  --panel: #0c0c0c;
+  --surface: #111111;
+  --ink: #f5f3ed;
+  --ink-soft: #f2f0ea;
+  --muted: #8e8b85;
+
+  /* rules, lightest to heaviest */
+  --line-faint: #141414;
+  --line-dim: #1c1c1c;
+  --line: #242424;
+
+  /* accent */
+  --accent: #ff4b1f;
+  --deep: #c93416;
+
+  /* the single page gutter the whole composition hangs off */
+  --gutter: clamp(18px, 4vw, 64px);
+
+  /* display type scale multiplier (the reference exposes this as a prop) */
+  --dscale: 1;
+
+  /* one easing curve throughout */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* display sizes */
+  --fs-hero: calc(min(clamp(64px, 11.4vw, 208px), 23vh) * var(--dscale));
+  --fs-hero-mobile: calc(clamp(58px, 20.5vw, 100px) * var(--dscale));
+  --fs-manifesto: calc(clamp(40px, 8.4vw, 148px) * var(--dscale));
+  /* stacked, so each word gets a line of its own */
+  --fs-dxc: calc(clamp(52px, 13.5vw, 226px) * var(--dscale));
+  --fs-about-h: calc(clamp(36px, 5.2vw, 92px) * var(--dscale));
+  --fs-contact-h: calc(clamp(44px, 9.2vw, 164px) * var(--dscale));
+
+  /* the recurring metadata size — the small half of the size contrast */
+  --fs-meta: 11px;
+  --fs-meta-sm: 10px;
+}

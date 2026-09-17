@@ -1,0 +1,50 @@
+.progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 96;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
+}
+
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(-100px, -100px, 0);
+  transition:
+    opacity 280ms ease,
+    width 320ms var(--ease),
+    height 320ms var(--ease),
+    margin 320ms var(--ease);
+}
+
+.cursor--open {
+  width: 88px;
+  height: 88px;
+  margin: -44px 0 0 -44px;
+}
+
+.cursor__label {
+  font-size: var(--fs-meta-sm);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bg);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
