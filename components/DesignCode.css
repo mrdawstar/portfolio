@@ -1,7 +1,21 @@
+/* A tall track: the scroll distance is the length of the animation. */
 .dxc {
   position: relative;
-  padding: clamp(72px, 11vh, 132px) 0 clamp(64px, 10vh, 120px);
+  height: 260vh;
   background: var(--surface);
+}
+
+/* The stage pins while the track scrolls past. Clipping lives here, on the
+   sticky element — `overflow: hidden` on the section itself would make it the
+   scroll container and stop the stage from sticking at all. */
+.dxc__stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(64px, 9vh, 96px) 0 clamp(24px, 4vh, 48px);
   overflow: hidden;
 }
 
@@ -81,7 +95,7 @@
 
 @media (max-width: 759px) {
   .dxc {
-    padding: clamp(60px, 9vh, 96px) 0 clamp(52px, 8vh, 88px);
+    height: 220vh;
   }
 
   .dxc__type {
@@ -95,6 +109,16 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .dxc {
+    height: auto;
+  }
+
+  .dxc__stage {
+    position: static;
+    height: auto;
+    padding: clamp(72px, 11vh, 132px) 0 clamp(64px, 10vh, 120px);
+  }
+
   .dxc__word {
     transform: none !important;
   }

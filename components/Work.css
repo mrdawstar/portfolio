@@ -302,7 +302,26 @@
   margin-top: clamp(12px, 2vh, 20px);
 }
 
-/* 02 FORGE — cinematic plate with the phone breaking its lower edge */
+/* 02 MATURA — energetic: plate pushed down-right, the phone breaking its
+   top-left corner, and the site's lime highlight under the title */
+.scene--bold .scene__shot--desktop {
+  inset: clamp(22px, 7%, 60px) 0 0 clamp(70px, 11%, 170px);
+}
+
+.scene--bold .scene__shot--phone {
+  left: 0;
+  top: 0;
+  width: clamp(110px, 13%, 196px);
+  aspect-ratio: 860 / 1864;
+  border: 1px solid color-mix(in srgb, var(--scene-accent) 35%, transparent);
+  box-shadow: 0 22px 50px rgb(40 20 90 / 0.18);
+}
+
+.scene--bold .scene__titleWord {
+  background: linear-gradient(transparent 78%, #c6f24e 78%, #c6f24e 92%, transparent 92%);
+}
+
+/* 03 FORGE — cinematic plate with the phone breaking its lower edge */
 .scene--product .scene__shot--desktop {
   inset: 0 clamp(90px, 13%, 210px) 0 0;
 }
@@ -453,6 +472,9 @@
      with no crop at all — cropping a site screenshot to a portrait slot (what
      the desktop staging does) leaves an unreadable fragment on a phone. */
   .work .scene__stage {
+    /* a size container, so the phone below can be sized from the space that
+       is actually left once the desktop band has taken its share */
+    container-type: size;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -473,18 +495,16 @@
     aspect-ratio: 16 / 10;
   }
 
-  /* An explicit width, not aspect-ratio: under `flex: 1 1 auto` in a column
-     the cross size does not resolve from the ratio, and the box ends up
-     narrower than the capture — which crops the mobile site sideways and cuts
-     its headline. A fixed width crops vertically instead, showing the top of
-     the page, which is the part worth showing. */
+  /* Sized from the room that is left, at the capture's own ratio, so the
+     phone shot is never cropped at all. The desktop band is 16/10 of the
+     stage width (62.5cqw) plus the 12px gap; whatever height remains, times
+     860/1864, is the width that fits it exactly. A box narrower than that
+     ratio cropped the mobile site sideways and cut into its logo and
+     headline. */
   .work .scene__shot--phone {
-    /* zero basis, not auto: with `auto` the basis resolves from the image's
-       own intrinsic height and the box overflows the stage, pushing the phone
-       down under the title */
-    flex: 1 1 0;
-    min-height: 0;
-    width: min(48%, 196px);
+    flex: 0 0 auto;
+    width: min(56cqw, calc((100cqh - 62.5cqw - 12px) * 0.4614));
+    aspect-ratio: 860 / 1864;
     align-self: center;
     border: 1px solid color-mix(in srgb, var(--scene-ink) 16%, transparent);
   }

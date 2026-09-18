@@ -17,7 +17,7 @@ export interface Project {
   /** one line in the project's own voice */
   tagline: string;
   /** how the panel is composed */
-  layout: "figure" | "product" | "service" | "portrait" | "warm";
+  layout: "figure" | "bold" | "product" | "service" | "portrait" | "warm";
   scene: {
     /** panel ground */
     bg: string;
@@ -52,6 +52,26 @@ export const projects: Project[] = [
       light: true,
     },
     images: { desktop: "atelier27-desktop", phone: "atelier27-phone" },
+  },
+  {
+    id: "matura",
+    name: "Matura 2027",
+    category: "Education — Course landing page",
+    year: "2026",
+    url: "https://matura-ochre.vercel.app/",
+    link: "matura-ochre.vercel.app",
+    // the site's own line: "Mniej stresu. Więcej „I can”."
+    tagline: "Less stress. More \u201cI can\u201d.",
+    layout: "bold",
+    // light grid ground, electric violet, a lime highlight
+    scene: {
+      bg: "#f6f5fb",
+      ink: "#15121f",
+      muted: "#6d6880",
+      accent: "#6b3de8",
+      light: true,
+    },
+    images: { desktop: "matura-desktop", phone: "matura-phone" },
   },
   {
     id: "forge",

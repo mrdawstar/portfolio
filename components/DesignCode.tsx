@@ -1,24 +1,27 @@
 import { useRef } from "react";
 import { useScrollEffect } from "../hooks/useScrollEffect";
-import { centered, clamp, ease } from "../lib/driver";
+import { progress, between, clamp, ease } from "../lib/driver";
 import "./DesignCode.css";
 
-/** DESIGN × CODE.
+/** DESIGN × CODE — pinned.
  *
- *  A stacked, diagonal composition: DESIGN sits high and left, CODE low and
- *  right, and the cross holds the centre between them. As the section scrolls
- *  through, both words slide horizontally to meet on the centre line while the
- *  cross rotates — the whole move is on the X axis, so nothing drifts
- *  vertically out of the composition.
+ *  The section is a tall track with a sticky stage, so the move lasts for
+ *  well over a screen of scrolling instead of being over in a moment:
  *
- *  The cross is drawn, not typed. The Archivo multiplication glyph is neither
- *  square nor optically centred, which made it look crooked between two pieces
- *  of geometric display type. */
+ *    0.00–0.48  DESIGN slides in from the left, CODE from the right
+ *    0.48–0.64  they hold, resolved on the centre line
+ *    0.64–1.00  they keep travelling, crossing past each other
+ *
+ *  The cross turns continuously for the whole track. All word motion is on
+ *  the X axis; the stage clips anything in transit, never the resolved state.
+ *
+ *  The cross is drawn, not typed: square by construction. */
 export function DesignCode({ motion }: { motion: boolean }) {
   const section = useRef<HTMLElement>(null);
   const design = useRef<HTMLSpanElement>(null);
   const code = useRef<HTMLSpanElement>(null);
   const cross = useRef<HTMLSpanElement>(null);
+  const note = useRef<HTMLParagraphElement>(null);
 
   useScrollEffect(({ vw }) => {
     const sec = section.current;
@@ -26,26 +29,28 @@ export function DesignCode({ motion }: { motion: boolean }) {
     const b = code.current;
     if (!sec || !a || !b) return;
 
-    const c = centered(sec);
-    // 0 while the section is still below, 1 once it has reached the middle
-    // Same window as the manifesto: the whole convergence happens while the
-    // section is on screen, rather than finishing before it arrives.
-    const settled = ease(clamp((c + 0.55) / 0.72, 0, 1));
-    const remaining = 1 - settled;
+    const p = progress(sec);
+    const arrive = ease(between(p, 0.02, 0.48));
+    const leave = ease(between(p, 0.64, 1));
 
-    // DESIGN starts out to the left, CODE out to the right; both converge on
-    // the centre line. Capped against the viewport so neither leaves the page.
-    const spread = Math.min(vw * 0.34, 460) * remaining;
+    const spread = Math.min(vw * 0.34, 460);
+    const aX = -spread * (1 - arrive) + spread * 0.5 * leave;
+    const bX = spread * (1 - arrive) - spread * 0.5 * leave;
 
-    a.style.transform = `translate3d(${-spread}px, 0, 0)`;
-    b.style.transform = `translate3d(${spread}px, 0, 0)`;
+    a.style.transform = `translate3d(${aX}px, 0, 0)`;
+    b.style.transform = `translate3d(${bX}px, 0, 0)`;
 
-    // the cross turns through a quarter as the two resolve around it
+    // resolved while the two are aligned, muted on the way in and out
+    const resolved = arrive > 0.9 && leave < 0.35;
+    b.style.color = resolved ? "var(--ink-soft)" : "var(--muted)";
+
     if (cross.current) {
-      cross.current.style.transform = `rotate(${remaining * 90}deg) scale(${0.8 + settled * 0.2})`;
-      cross.current.style.opacity = String(0.3 + settled * 0.7);
+      cross.current.style.transform = `rotate(${p * 360}deg) scale(${0.78 + arrive * 0.22 - leave * 0.12})`;
+      cross.current.style.opacity = String(clamp(0.3 + arrive * 0.7 - leave * 0.3, 0, 1));
     }
-    b.style.color = settled > 0.82 ? "var(--ink-soft)" : "var(--muted)";
+    if (note.current) {
+      note.current.style.opacity = String(clamp(arrive * 1.2 - leave * 1.4, 0, 1));
+    }
   }, motion);
 
   return (
@@ -55,33 +60,33 @@ export function DesignCode({ motion }: { motion: boolean }) {
       className="dxc"
       aria-labelledby="dxc-heading"
     >
-      <div className="index-row dxc__index">
-        <span className="meta meta--accent">04</span>
-        <span className="meta nowrap">One discipline</span>
+      <div className="dxc__stage">
+        <div className="index-row dxc__index">
+          <span className="meta meta--accent">04</span>
+          <span className="meta nowrap">One discipline</span>
+        </div>
+
+        <h2 id="dxc-heading" className="dxc__type">
+          <span ref={design} className="dxc__word">
+            Design
+          </span>
+          <span className="sr-only"> and </span>
+          <span ref={cross} className="dxc__cross" aria-hidden="true">
+            <svg viewBox="0 0 100 100" focusable="false">
+              <line x1="14" y1="14" x2="86" y2="86" />
+              <line x1="86" y1="14" x2="14" y2="86" />
+            </svg>
+          </span>
+          <span ref={code} className="dxc__word dxc__word--muted">
+            Code
+          </span>
+        </h2>
+
+        <p ref={note} className="dxc__note">
+          Art direction, interface and frontend — decided together, built by
+          one pair of hands.
+        </p>
       </div>
-
-      <h2 id="dxc-heading" className="dxc__type">
-        <span ref={design} className="dxc__word">
-          Design
-        </span>
-        <span className="sr-only"> and </span>
-        <span ref={cross} className="dxc__cross" aria-hidden="true">
-          {/* equal width and height, drawn on a square viewBox: symmetric by
-              construction rather than by luck of the glyph */}
-          <svg viewBox="0 0 100 100" focusable="false">
-            <line x1="14" y1="14" x2="86" y2="86" />
-            <line x1="86" y1="14" x2="14" y2="86" />
-          </svg>
-        </span>
-        <span ref={code} className="dxc__word dxc__word--muted">
-          Code
-        </span>
-      </h2>
-
-      <p className="dxc__note">
-        Art direction, interface and frontend — decided together, built by one
-        pair of hands.
-      </p>
     </section>
   );
 }

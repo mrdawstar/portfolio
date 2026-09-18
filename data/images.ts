@@ -57,6 +57,26 @@ export const images = {
     "width": 860,
     "height": 1864
   },
+  "matura-desktop": {
+    "widths": [
+      900,
+      1500,
+      2100
+    ],
+    "aspect": 1.6,
+    "width": 2400,
+    "height": 1500
+  },
+  "matura-phone": {
+    "widths": [
+      420,
+      700,
+      860
+    ],
+    "aspect": 0.4614,
+    "width": 860,
+    "height": 1864
+  },
   "forge-desktop": {
     "widths": [
       900,

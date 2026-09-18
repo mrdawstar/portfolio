@@ -1,46 +1,78 @@
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import { useScrollEffect } from "../hooks/useScrollEffect";
 import { centered, clamp, ease } from "../lib/driver";
 import "./Manifesto.css";
 
-/** Kinetic typography, X axis only.
+const LINE_A = ["Design", "without", "code", "is", "a", "picture."];
+const LINE_B = ["Code", "without", "design", "is", "a"];
+
+/** Kinetic typography, X axis only, word by word.
  *
- *  The first line enters from the left, the second from the right, and both
- *  settle at zero offset — their resting composition is flush left and flush
- *  right respectively.
+ *  Line one streams in from the left, line two from the right. Every word is
+ *  its own traveller with a staggered start, but they all land on the same
+ *  scroll position — so the composition resolves at once, cleanly, with each
+ *  line flush to its own edge. Scrolling on, the lines keep moving: each
+ *  carries on across in the direction it came from, so the section never
+ *  goes still while it is on screen.
  *
- *  The travel is deliberately large enough to read as an entrance, so during
- *  it the lines sit partly outside the section. `overflow-x: clip` on the
- *  section absorbs that without creating a scroll container or adding a pixel
- *  of page overflow, and because the settled offset is exactly 0 the final
- *  composition can never be the thing that gets cut. */
+ *  Only words move (inline-block, transform only — no reflow). The section
+ *  clips them in transit; the resolved offset is exactly 0. */
 export function Manifesto({ motion }: { motion: boolean }) {
   const section = useRef<HTMLElement>(null);
   const lineA = useRef<HTMLParagraphElement>(null);
   const lineB = useRef<HTMLParagraphElement>(null);
 
-  useScrollEffect(() => {
-    const sec = section.current;
-    const a = lineA.current;
-    const b = lineB.current;
-    if (!sec || !a || !b) return;
+  useScrollEffect(({ vw }) => {
+    if (!lineA.current || !lineB.current) return;
 
-    // -1 below the fold, 0 centred, 1 above: settle to 0 by the time the
-    // section reaches the middle of the viewport and stay settled after.
-    const c = centered(sec);
-    // The travel window is deliberately late: `c + 1` would finish the move
-    // before the section is properly on screen. Starting at c = -0.55 (the
-    // section just entering from the bottom) and finishing a little past
-    // centre puts the whole entrance in view.
-    const settled = ease(clamp((c + 0.55) / 0.72, 0, 1));
-    const remaining = 1 - settled;
+    const reach = Math.min(vw * 0.62, 760);
 
-    // enough travel to read as arriving from off to the side
-    const reach = Math.min(window.innerWidth * 0.5, 520);
+    // One clock for the whole statement, taken from the FIRST line's own
+    // position (the section centre sits below the text because of its top
+    // padding, so timing off it played the entrance below the fold).
+    //
+    // Timing each line independently was worse: line one began leaving before
+    // line two had landed, so the finished composition never existed on screen.
+    // On one clock the sequence is a relay with a shared hold:
+    //   line one streams in from the left, lands;
+    //   line two streams in from the right, lands;
+    //   both hold, resolved;
+    //   both drift on across in the direction they came from.
+    const c = centered(lineA.current);
+    const leave = ease(clamp((c - 0.55) / 0.6, 0, 1));
 
-    a.style.transform = `translate3d(${-remaining * reach}px, 0, 0)`;
-    b.style.transform = `translate3d(${remaining * reach}px, 0, 0)`;
+    const drive = (
+      line: HTMLElement,
+      dir: -1 | 1,
+      from: number,
+      land: number,
+    ) => {
+      const words = line.querySelectorAll<HTMLElement>(".mw");
+      const n = words.length;
+      words.forEach((w, i) => {
+        // later words start later but all finish on the same beat
+        const start = from + i * (0.3 / Math.max(1, n - 1));
+        const t = ease(clamp((c - start) / (land - start), 0, 1));
+        const x = dir * reach * (1 - t) - dir * reach * 0.28 * leave;
+        w.style.transform = `translate3d(${x.toFixed(1)}px, 0, 0)`;
+        w.style.opacity = String(0.08 + 0.92 * t);
+      });
+    };
+
+    drive(lineA.current, -1, -0.9, -0.1); // from the left, lands first
+    drive(lineB.current, 1, -0.55, 0.12); // from the right, lands second
   }, motion);
+
+  const words = (list: string[], tail?: ReactNode) => (
+    <>
+      {list.map((w, i) => (
+        <span key={i}>
+          <span className="mw">{w}</span>{" "}
+        </span>
+      ))}
+      {tail}
+    </>
+  );
 
   return (
     <section
@@ -58,16 +90,20 @@ export function Manifesto({ motion }: { motion: boolean }) {
 
       <div className="manifesto__row">
         <p ref={lineA} className="manifesto__line">
-          Design without code is a picture.
+          {words(LINE_A)}
         </p>
       </div>
 
       <div className="manifesto__row manifesto__row--end">
         <p ref={lineB} className="manifesto__line manifesto__line--right">
-          Code without design is a{" "}
-          <em className="serif">
-            page<span className="stop">.</span>
-          </em>
+          {words(
+            LINE_B,
+            <span className="mw">
+              <em className="serif">
+                page<span className="stop">.</span>
+              </em>
+            </span>,
+          )}
         </p>
       </div>
     </section>

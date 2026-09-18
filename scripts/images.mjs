@@ -18,6 +18,8 @@ const JOBS = [
   // Selected work — screenshots captured from the five live sites.
   { src: "captures/atelier27-desktop.png", name: "atelier27-desktop", widths: [900, 1500, 2100] },
   { src: "captures/atelier27-phone.png", name: "atelier27-phone", widths: [420, 700, 860] },
+  { src: "captures/matura-desktop.png", name: "matura-desktop", widths: [900, 1500, 2100] },
+  { src: "captures/matura-phone.png", name: "matura-phone", widths: [420, 700, 860] },
   { src: "captures/forge-desktop.png", name: "forge-desktop", widths: [900, 1500, 2100] },
   { src: "captures/forge-phone.png", name: "forge-phone", widths: [420, 700, 860] },
   { src: "captures/saferoad-desktop.png", name: "saferoad-desktop", widths: [900, 1500, 2100] },

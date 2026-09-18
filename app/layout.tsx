@@ -5,7 +5,7 @@ const SITE_URL = "https://dawidbubnow.com";
 
 const TITLE = "WEBBOSS — Dawid Bubnow, Creative Web Designer & Developer";
 const DESCRIPTION =
-  "WEBBOSS is the studio of Dawid Bubnow — independent web design and frontend development from Warsaw, where design and code are one discipline. Selected work: Atelier 27, Forge, SafeRoad, Anna Szydłowska, Veronika English.";
+  "WEBBOSS is the studio of Dawid Bubnow — independent web design and frontend development from Warsaw, where design and code are one discipline. Selected work: Atelier 27, Matura 2027, Forge, SafeRoad, Anna Szydłowska, Veronika English.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
