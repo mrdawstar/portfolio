@@ -76,9 +76,10 @@ export function Audit({ magnetic, preparedFor }: { magnetic: boolean; preparedFo
       const mailto = `mailto:${site.email}?subject=${encodeURIComponent(
         "Audyt wycieków",
       )}&body=${encodeURIComponent(body)}`;
+      // No redirect: yanking the visitor into a mail client reads as a broken
+      // form. The prefilled message is offered as a button instead.
       track("Contact");
       setState({ kind: "fallback", mailto });
-      window.location.href = mailto;
     }
   }
 
@@ -193,10 +194,12 @@ export function Audit({ magnetic, preparedFor }: { magnetic: boolean; preparedFo
             </button>
 
             {state.kind === "fallback" && (
-              <p className="gform__note" role="status">
-                Otworzyłem gotową wiadomość w Twojej poczcie. Jeśli się nie pojawiła, napisz na{" "}
-                <a href={state.mailto}>{site.email}</a>.
-              </p>
+              <div className="gform__note gform__note--warn" role="status">
+                <p>Wysyłka chwilowo nie działa — Twoje zgłoszenie do mnie nie dotarło.</p>
+                <a href={state.mailto} className="gform__noteBtn">
+                  Wyślij to samo mailem <span aria-hidden="true">→</span>
+                </a>
+              </div>
             )}
 
             <p className="gform__alt">
