@@ -20,7 +20,7 @@ export const growth = {
    *  get done properly. Update `taken` by hand when a pilot is signed; it
    *  resets to 0 at the start of each month. */
   capacity: 3,
-  taken: 0,
+  taken: 1,
 };
 
 /** Veronika's words, lightly edited for length. Her message: huge thanks
