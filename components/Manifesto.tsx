@@ -1,10 +1,8 @@
 import { useRef, type ReactNode } from "react";
 import { useScrollEffect } from "../hooks/useScrollEffect";
 import { centered, clamp, ease } from "../lib/driver";
+import { useCopy } from "../lib/lang";
 import "./Manifesto.css";
-
-const LINE_A = ["Design", "without", "code", "is", "a", "picture."];
-const LINE_B = ["Code", "without", "design", "is", "a"];
 
 /** Kinetic typography, X axis only, word by word.
  *
@@ -21,6 +19,9 @@ export function Manifesto({ motion }: { motion: boolean }) {
   const section = useRef<HTMLElement>(null);
   const lineA = useRef<HTMLParagraphElement>(null);
   const lineB = useRef<HTMLParagraphElement>(null);
+  const t = useCopy();
+  const LINE_A = t.manifesto.lineA;
+  const LINE_B = t.manifesto.lineB;
 
   useScrollEffect(({ vw }) => {
     if (!lineA.current || !lineB.current) return;
@@ -63,7 +64,7 @@ export function Manifesto({ motion }: { motion: boolean }) {
     drive(lineB.current, 1, -0.55, 0.12); // from the right, lands second
   }, motion);
 
-  const words = (list: string[], tail?: ReactNode) => (
+  const words = (list: readonly string[], tail?: ReactNode) => (
     <>
       {list.map((w, i) => (
         <span key={i}>
@@ -84,7 +85,7 @@ export function Manifesto({ motion }: { motion: boolean }) {
       <div className="index-row manifesto__index">
         <span className="meta meta--accent">02</span>
         <h2 id="manifesto-heading" className="meta nowrap manifesto__label">
-          Manifesto
+          {t.sections.manifesto.label}
         </h2>
       </div>
 
@@ -100,7 +101,7 @@ export function Manifesto({ motion }: { motion: boolean }) {
             LINE_B,
             <span className="mw">
               <em className="serif">
-                page<span className="stop">.</span>
+                {t.manifesto.tail}<span className="stop">.</span>
               </em>
             </span>,
           )}

@@ -28,6 +28,12 @@ const JOBS = [
   { src: "captures/law-phone.png", name: "law-phone", widths: [420, 700, 860] },
   { src: "captures/english-desktop.png", name: "english-desktop", widths: [900, 1500, 2100] },
   { src: "captures/english-phone.png", name: "english-phone", widths: [420, 700, 860] },
+
+  // /klienci case proof — the client's Stripe gross volume, before and after.
+  { src: "captures/case-before.jpg", name: "case-before", widths: [700, 1320] },
+  { src: "captures/case-after.webp", name: "case-after", widths: [700, 1426] },
+  { src: "captures/ig-before.jpg", name: "ig-before", widths: [600, 1000] },
+  { src: "captures/ig-after.jpg", name: "ig-after", widths: [600, 1000] },
 ];
 
 await rm(OUT, { recursive: true, force: true });

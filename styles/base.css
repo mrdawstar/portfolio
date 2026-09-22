@@ -238,3 +238,8 @@ button {
     transform: none;
   }
 }
+
+/* a wrapper that exists for attributes only (lang), never for layout */
+.contents {
+  display: contents;
+}

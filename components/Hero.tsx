@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { site } from "../data/site";
 import { Picture } from "./Picture";
 import { useScrollEffect } from "../hooks/useScrollEffect";
+import { useCopy } from "../lib/lang";
 import "./Hero.css";
 
 interface HeroProps {
@@ -18,6 +19,7 @@ export function Hero({ isMobile, motion }: HeroProps) {
   const mWordA = useRef<HTMLSpanElement>(null); // mask wrapper, not the word
   const mWordB = useRef<HTMLSpanElement>(null);
   const mMeta = useRef<HTMLDivElement>(null);
+  const t = useCopy().hero;
 
   // As you leave the hero the type drifts left and up while the figure sinks:
   // the name and the portrait separate rather than scrolling as one plate.
@@ -59,7 +61,7 @@ export function Hero({ isMobile, motion }: HeroProps) {
         <div className="hero__mobileFigure">
           <Picture
             name="hero-cutout"
-            alt={`${site.name}, creative web designer and developer`}
+            alt={`${site.name}, ${t.alt}`}
             sizes="100vw"
             priority
             className="hero__mobileImg"
@@ -86,11 +88,12 @@ export function Hero({ isMobile, motion }: HeroProps) {
             <span className="hero__rule" />
             <div className="hero__mobileRow">
               <span className="meta meta--sm">
-                Creative web designer
-                <br />&amp; developer
+                {t.roleMobile[0]}
+                <br />
+                {t.roleMobile[1]}
               </span>
               <span className="meta meta--sm hero__right">
-                Warsaw
+                {t.city}
                 <br />
                 {site.year}
               </span>
@@ -98,10 +101,10 @@ export function Hero({ isMobile, motion }: HeroProps) {
             <div className="hero__mobileRow hero__mobileRow--tight">
               <span className="meta meta--sm hero__available">
                 <span className="hero__dot" />
-                Available
+                {t.availableShort}
               </span>
               <a href="#work" className="hero__workLink">
-                Work <span className="stop">↓</span>
+                {t.ctaShort} <span className="stop">↓</span>
               </a>
               </div>
             </div>
@@ -115,9 +118,9 @@ export function Hero({ isMobile, motion }: HeroProps) {
     <section id="top" className="hero">
       <div className="hero__type">
         <div className="hero__kicker">
-          <span className="meta nowrap">{site.role}</span>
+          <span className="meta nowrap">{t.role}</span>
           <span className="meta">
-            {site.location} — <em className="serif hero__yearEm">{site.year}</em>
+            {t.location} — <em className="serif hero__yearEm">{site.year}</em>
           </span>
         </div>
 
@@ -141,7 +144,7 @@ export function Hero({ isMobile, motion }: HeroProps) {
 
       <Picture
         name="hero-cutout"
-        alt={`${site.name}, creative web designer and developer`}
+        alt={`${site.name}, ${t.alt}`}
         sizes="52vw"
         priority
         className="hero__figure"
@@ -151,10 +154,10 @@ export function Hero({ isMobile, motion }: HeroProps) {
       <div className="hero__foot">
         <span className="meta meta--strong hero__available">
           <span className="hero__dot" />
-          Available for select projects
+          {t.available}
         </span>
         <a href="#work" className="hero__cta">
-          Selected work <span className="stop">↓</span>
+          {t.cta} <span className="stop">↓</span>
         </a>
       </div>
     </section>

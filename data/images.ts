@@ -156,6 +156,41 @@ export const images = {
     "aspect": 0.4614,
     "width": 860,
     "height": 1864
+  },
+  "case-before": {
+    "widths": [
+      700,
+      1320
+    ],
+    "aspect": 1.2754,
+    "width": 1320,
+    "height": 1035
+  },
+  "case-after": {
+    "widths": [
+      700,
+      1426
+    ],
+    "aspect": 1.2928,
+    "width": 1426,
+    "height": 1103
+  },
+  "ig-before": {
+    "widths": [
+      600
+    ],
+    "aspect": 1.1654,
+    "width": 592,
+    "height": 508
+  },
+  "ig-after": {
+    "widths": [
+      600,
+      1000
+    ],
+    "aspect": 1.0662,
+    "width": 1320,
+    "height": 1238
   }
 } as const satisfies Record<string, ImageMeta>;
 

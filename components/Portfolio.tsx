@@ -9,8 +9,10 @@ import { Work } from "./Work";
 import { DesignCode } from "./DesignCode";
 import { About } from "./About";
 import { Contact, Footer } from "./Contact";
+import { LangProvider } from "../lib/lang";
+import { copy, type Lang } from "../data/copy";
 
-export default function Portfolio() {
+export default function Portfolio({ lang = "en" }: { lang?: Lang }) {
   const isMobile = useIsMobile();
   const reduced = useReducedMotion();
   const finePointer = useFinePointer();
@@ -20,9 +22,10 @@ export default function Portfolio() {
   const motion = !reduced;
 
   return (
-    <>
+    <LangProvider lang={lang}>
+      <div lang={lang} className="contents">
       <a className="skip-link" href="#work">
-        Skip to selected work
+        {copy[lang].skip}
       </a>
 
       <ScrollProgress enabled={motion} />
@@ -39,6 +42,7 @@ export default function Portfolio() {
       </main>
 
       <Footer />
-    </>
+      </div>
+    </LangProvider>
   );
 }

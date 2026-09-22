@@ -40,3 +40,13 @@
   --fs-meta: 11px;
   --fs-meta-sm: 10px;
 }
+
+/* Phones: the metadata size is the small half of the size contrast, but at
+   10–11px with wide tracking it stops being readable on a real screen. One
+   step up keeps the contrast and the legibility. */
+@media (max-width: 759px) {
+  :root {
+    --fs-meta: 12px;
+    --fs-meta-sm: 11px;
+  }
+}

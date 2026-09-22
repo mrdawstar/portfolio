@@ -11,7 +11,7 @@ export const site = {
   location: "Warsaw — Poland",
   year: "2026",
   email: "daveditcreation@gmail.com",
-  url: "https://dawidbubnow.com",
+  url: "https://www.webbosswarszawa.com",
   description:
     "WEBBOSS — the studio of Dawid Bubnow. Independent web design and frontend development from Warsaw, where design and code are one discipline.",
 } as const;

@@ -5,6 +5,7 @@ import { useScrollEffect } from "../hooks/useScrollEffect";
 import { useInView } from "../hooks/useInView";
 import { progress, clamp } from "../lib/driver";
 import type { ImageName } from "../data/images";
+import { useCopy } from "../lib/lang";
 import "./Work.css";
 
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -12,10 +13,11 @@ const pad = (n: number) => String(n).padStart(2, "0");
 /** Metadata is identical across every scene — it is the WEBBOSS system holding
  *  five different art directions together. */
 function Meta({ project, index }: { project: Project; index: number }) {
+  const local = useCopy().projects[project.id];
   return (
     <div className="scene__meta">
       <span className="scene__index">{pad(index + 1)}</span>
-      <span className="scene__category">{project.category}</span>
+      <span className="scene__category">{local?.category ?? project.category}</span>
       <span className="scene__link">{project.link}</span>
       <span className="scene__year">{project.year}</span>
     </div>
@@ -32,6 +34,8 @@ function Scene({
   panelRef: (el: HTMLElement | null) => void;
 }) {
   const { scene, layout } = project;
+  const t = useCopy();
+  const local = t.projects[project.id];
 
   return (
     <article
@@ -54,7 +58,7 @@ function Scene({
         data-cursor="view"
       >
         <span className="sr-only">
-          {project.name} — open the live site in a new tab
+          {project.name} — {t.work.open}
         </span>
       </a>
 
@@ -90,9 +94,9 @@ function Scene({
             <span className="scene__titleWord">{project.name}</span>
           </span>
         </h3>
-        <p className="scene__tagline">{project.tagline}</p>
+        <p className="scene__tagline">{local?.tagline ?? project.tagline}</p>
         <span className="scene__cta" aria-hidden="true">
-          View project <span className="scene__arrow">↗</span>
+          {t.work.view} <span className="scene__arrow">↗</span>
         </span>
       </div>
     </article>
@@ -106,6 +110,7 @@ export function Work({
   motion: boolean;
   isMobile: boolean;
 }) {
+  const t = useCopy();
   const section = useRef<HTMLElement>(null);
   const rail = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -174,10 +179,10 @@ export function Work({
           <div className="index-row">
             <span className="meta meta--accent">03</span>
             <h2 id="work-heading" className="meta nowrap work__heading">
-              Selected work
+              {t.work.heading}
             </h2>
           </div>
-          <span className="meta nowrap">{pad(projects.length)} projects</span>
+          <span className="meta nowrap">{t.work.count(pad(projects.length))}</span>
         </div>
 
         <div className="work__stack">
@@ -209,7 +214,7 @@ export function Work({
           <div className="index-row">
             <span className="meta meta--accent">03</span>
             <h2 id="work-heading" className="meta nowrap work__heading">
-              Selected work
+              {t.work.heading}
             </h2>
           </div>
           <span className="work__counter" aria-hidden="true">

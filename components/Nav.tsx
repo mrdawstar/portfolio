@@ -2,11 +2,30 @@ import { useEffect, useRef, useState } from "react";
 import { sections, site } from "../data/site";
 import { useScrollEffect } from "../hooks/useScrollEffect";
 import { MobileMenu } from "./MobileMenu";
+import { useCopy } from "../lib/lang";
 import "./Nav.css";
 
-const navLinks = sections.filter((s) => s.nav);
+/** EN / PL. The page you are on is marked; the other is a plain link. */
+export function LangSwitch({ className = "" }: { className?: string }) {
+  const { lang } = useCopy();
+  return (
+    <span className={`langSwitch ${className}`}>
+      <a href="/" hrefLang="en" lang="en" aria-current={lang === "en" ? "page" : undefined}>
+        EN
+      </a>
+      <span aria-hidden="true">/</span>
+      <a href="/pl" hrefLang="pl" lang="pl" aria-current={lang === "pl" ? "page" : undefined}>
+        PL
+      </a>
+    </span>
+  );
+}
 
 export function Nav({ isMobile }: { isMobile: boolean }) {
+  const t = useCopy();
+  const navLinks = sections
+    .filter((s) => s.nav)
+    .map((s) => ({ ...s, ...t.sections[s.id] }));
   const header = useRef<HTMLElement>(null);
   const [active, setActive] = useState<string>(sections[0].id);
   const [condensed, setCondensed] = useState(false);
@@ -15,6 +34,8 @@ export function Nav({ isMobile }: { isMobile: boolean }) {
   // The running section indicator. State (not textContent) so `aria-current`
   // stays truthful for assistive tech; it only changes ~7 times per page.
   useScrollEffect(({ vh }) => {
+    // while the menu holds the page, scrollY reads 0 — ignore it
+    if (document.documentElement.classList.contains("is-menu-open")) return;
     let current: string = sections[0].id;
     for (const s of sections) {
       const el = document.getElementById(s.id);
@@ -41,10 +62,11 @@ export function Nav({ isMobile }: { isMobile: boolean }) {
       >
         {isMobile ? (
           <div className="nav__bar">
-            <a href="#top" className="nav__mark" aria-label={`${site.brand}, back to top`}>
+            <a href="#top" className="nav__mark" aria-label={`${site.brand}, ${t.nav.backToTop}`}>
               <span className="nav__dot" />
               <span className="nav__markText">{site.brand}</span>
             </a>
+            <LangSwitch className="langSwitch--bar" />
             <button
               type="button"
               className="nav__menuBtn"
@@ -52,19 +74,19 @@ export function Nav({ isMobile }: { isMobile: boolean }) {
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
             >
-              Menu
+              {t.nav.menu}
             </button>
           </div>
         ) : (
           <div className="nav__grid">
-            <a href="#top" className="nav__mark" aria-label={`${site.brand}, back to top`}>
+            <a href="#top" className="nav__mark" aria-label={`${site.brand}, ${t.nav.backToTop}`}>
               <span className="nav__dot" />
               <span className="nav__markText">{site.brand}</span>
             </a>
             <span className="nav__state" aria-hidden="true">
-              {activeSection.num} — {activeSection.label}
+              {activeSection.num} — {t.sections[activeSection.id].label}
             </span>
-            <nav aria-label="Sections">
+            <nav aria-label={t.nav.sections}>
               {navLinks.map((s, i) => (
                 <a
                   key={s.id}
@@ -78,6 +100,7 @@ export function Nav({ isMobile }: { isMobile: boolean }) {
                   {s.short}
                 </a>
               ))}
+              <LangSwitch />
             </nav>
           </div>
         )}

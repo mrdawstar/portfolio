@@ -134,3 +134,35 @@
     grid-template-columns: 1fr auto;
   }
 }
+
+/* EN / PL */
+.langSwitch {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--line);
+}
+
+.langSwitch a {
+  color: var(--muted);
+  padding-bottom: 3px;
+  border-bottom: 1px solid transparent;
+  transition: color 300ms ease, border-color 300ms ease;
+}
+
+.langSwitch a:hover {
+  color: var(--ink);
+}
+
+.langSwitch a[aria-current] {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+.langSwitch--bar {
+  margin-left: auto;
+}

@@ -13,6 +13,15 @@ const nextConfig: NextConfig = {
      lockfile outside the repo as the workspace root, which makes the traced
      output on Vercel wrong. */
   outputFileTracingRoot: path.join(import.meta.dirname, "./"),
+  /* The acquisition page lives at /klienci; the English words people might
+     type or remember from a conversation land there too. */
+  async redirects() {
+    return ["/grow", "/growth", "/clients", "/audyt"].map((source) => ({
+      source,
+      destination: "/klienci",
+      permanent: false,
+    }));
+  },
 };
 
 export default nextConfig;

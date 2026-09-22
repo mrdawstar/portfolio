@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { site } from "../data/site";
 import { useScrollEffect } from "../hooks/useScrollEffect";
 import { useInView } from "../hooks/useInView";
+import { useCopy } from "../lib/lang";
 import "./Contact.css";
 
 /** The CTA leans toward the cursor within a 240px radius — a single restrained
@@ -10,6 +11,7 @@ export function Contact({ magnetic }: { magnetic: boolean }) {
   const cta = useRef<HTMLAnchorElement>(null);
   const [hover, setHover] = useState(false);
   const [root, seen] = useInView<HTMLElement>();
+  const t = useCopy().contact;
 
   useScrollEffect(({ px, py, vw, vh }) => {
     const el = cta.current;
@@ -34,16 +36,16 @@ export function Contact({ magnetic }: { magnetic: boolean }) {
     >
       <div className="index-row contact__index">
         <span className="meta meta--accent">06</span>
-        <span className="meta">Contact</span>
+        <span className="meta">{t.label}</span>
       </div>
 
       <h2 id="contact-heading" className="contact__title">
         <span className="lineMask" style={{ "--i": 0 } as React.CSSProperties}>
-          <span className="lineMask__in">Let's build</span>
+          <span className="lineMask__in">{t.lineA}</span>
         </span>
         <span className="lineMask" style={{ "--i": 1 } as React.CSSProperties}>
           <span className="lineMask__in">
-            something <em className="serif accent">memorable.</em>
+            {t.lineB[0]} <em className="serif accent">{t.lineB[1]}</em>
           </span>
         </span>
       </h2>
@@ -56,7 +58,7 @@ export function Contact({ magnetic }: { magnetic: boolean }) {
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
         >
-          Start a project
+          {t.cta}
           <span className={`contact__arrow${hover ? " is-hover" : ""}`} aria-hidden="true">
             →
           </span>
@@ -70,14 +72,20 @@ export function Contact({ magnetic }: { magnetic: boolean }) {
 }
 
 export function Footer() {
+  const t = useCopy().footer;
   return (
     <footer className="footer">
       <span className="meta meta--sm nowrap">
         {site.name} — {site.year}
       </span>
-      <span className="meta meta--sm nowrap">Designed &amp; built in Warsaw</span>
+      <span className="meta meta--sm nowrap">{t.built}</span>
+      {/* the acquisition offer is deliberately a separate page: reachable
+          from here, never announced above the fold */}
+      <a href="/klienci" className="meta meta--sm nowrap footer__top">
+        {t.grow}
+      </a>
       <a href="#top" className="meta meta--sm nowrap footer__top">
-        Back to top ↑
+        {t.top}
       </a>
     </footer>
   );

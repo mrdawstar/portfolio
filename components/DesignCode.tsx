@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { useScrollEffect } from "../hooks/useScrollEffect";
 import { progress, between, clamp, ease } from "../lib/driver";
+import { useCopy } from "../lib/lang";
 import "./DesignCode.css";
 
 /** DESIGN × CODE — pinned.
@@ -22,6 +23,7 @@ export function DesignCode({ motion }: { motion: boolean }) {
   const code = useRef<HTMLSpanElement>(null);
   const cross = useRef<HTMLSpanElement>(null);
   const note = useRef<HTMLParagraphElement>(null);
+  const t = useCopy().dxc;
 
   useScrollEffect(({ vw }) => {
     const sec = section.current;
@@ -63,14 +65,14 @@ export function DesignCode({ motion }: { motion: boolean }) {
       <div className="dxc__stage">
         <div className="index-row dxc__index">
           <span className="meta meta--accent">04</span>
-          <span className="meta nowrap">One discipline</span>
+          <span className="meta nowrap">{t.label}</span>
         </div>
 
         <h2 id="dxc-heading" className="dxc__type">
           <span ref={design} className="dxc__word">
-            Design
+            {t.a}
           </span>
-          <span className="sr-only"> and </span>
+          <span className="sr-only"> {t.and} </span>
           <span ref={cross} className="dxc__cross" aria-hidden="true">
             <svg viewBox="0 0 100 100" focusable="false">
               <line x1="14" y1="14" x2="86" y2="86" />
@@ -78,13 +80,12 @@ export function DesignCode({ motion }: { motion: boolean }) {
             </svg>
           </span>
           <span ref={code} className="dxc__word dxc__word--muted">
-            Code
+            {t.b}
           </span>
         </h2>
 
         <p ref={note} className="dxc__note">
-          Art direction, interface and frontend — decided together, built by
-          one pair of hands.
+          {t.note}
         </p>
       </div>
     </section>

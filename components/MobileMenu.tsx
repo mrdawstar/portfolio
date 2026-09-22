@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { site } from "../data/site";
+import { useCopy } from "../lib/lang";
+import { LangSwitch } from "./Nav";
 import "./MobileMenu.css";
 
 interface MobileMenuProps {
   open: boolean;
   onClose: () => void;
   links: readonly { id: string; short?: string; label: string }[];
+  /** the EN / PL switch in the footer row; off where there is one language */
+  showLang?: boolean;
 }
 
 /** Full-bleed editorial menu.
@@ -14,11 +18,24 @@ interface MobileMenuProps {
  *  the numbers fade in behind them. Closing runs the same choreography in
  *  reverse rather than snapping — which is why the panel stays mounted through
  *  an explicit `closing` state instead of unmounting on the click. */
-export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
+export function MobileMenu({ open, onClose, links, showLang = true }: MobileMenuProps) {
   const panel = useRef<HTMLDivElement>(null);
   const restoreTo = useRef<HTMLElement | null>(null);
+  /** Where a tapped link wants to go. The page is locked (body fixed) while
+   *  the menu is open, so a native anchor jump lands nowhere and the unlock
+   *  would then restore the old position over it. The jump waits for the
+   *  unlock instead. */
+  const pending = useRef<string | null>(null);
+  /** Read through a ref so the lock effect depends on `open` alone. Parents
+   *  re-render while the menu is open (locking the body resets scrollY, which
+   *  their scroll state reacts to); with `onClose` as a dependency every such
+   *  render tore the lock down and rebuilt it — the page jumped and focus
+   *  bounced. */
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
   const [mounted, setMounted] = useState(false);
   const [entered, setEntered] = useState(false);
+  const t = useCopy();
 
   /** Mount and "open" are deliberately two steps. Applying the open class in
    *  the same commit that inserts the node gives the browser no closed state
@@ -62,7 +79,7 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onClose();
+        closeRef.current();
         return;
       }
       if (e.key !== "Tab" || !node) return;
@@ -88,10 +105,26 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
       document.body.style.top = "";
       document.body.style.left = "";
       document.body.style.right = "";
-      window.scrollTo(0, y);
-      restoreTo.current?.focus();
+      // instant: `scroll-behavior: smooth` would otherwise animate from the top
+      window.scrollTo({ top: y, behavior: "instant" });
+      const target = pending.current && document.getElementById(pending.current);
+      pending.current = null;
+      if (target) {
+        // Measured from layout, not the box: <main> is still easing back from
+        // its receded scale(0.94), which would shorten every distance by 6%
+        // (a section 10 000px down landed 600px short). Instant, because the
+        // closing wipe hides it anyway.
+        let top = 0;
+        for (let el: HTMLElement | null = target; el; el = el.offsetParent as HTMLElement | null) {
+          top += el.offsetTop;
+        }
+        window.scrollTo({ top, behavior: "instant" });
+        history.replaceState(null, "", `#${target.id}`);
+      } else {
+        restoreTo.current?.focus({ preventScroll: true });
+      }
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!mounted) return null;
 
@@ -111,18 +144,22 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
           <span className="menu__brandText">{site.brand}</span>
         </span>
         <button type="button" className="menu__close" onClick={onClose}>
-          Close
+          {t.nav.close}
         </button>
       </div>
 
-      <nav className="menu__nav" aria-label="Sections">
+      <nav className="menu__nav" aria-label={t.nav.sections}>
         {links.map((s, i) => (
           <a
             key={s.id}
             href={`#${s.id}`}
             className="menu__item"
             style={{ "--i": i } as React.CSSProperties}
-            onClick={onClose}
+            onClick={(e) => {
+              e.preventDefault();
+              pending.current = s.id;
+              onClose();
+            }}
           >
             <span className="menu__num" aria-hidden="true">
               {String(i + 1).padStart(2, "0")}
@@ -143,8 +180,9 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
         <div className="menu__footRow">
           <span className="meta meta--sm menu__available">
             <span className="menu__dot" />
-            Available
+            {t.nav.available}
           </span>
+          {showLang && <LangSwitch />}
           <span className="meta meta--sm">
             {site.name} — {site.year}
           </span>

@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "../styles/base.css";
 
-const SITE_URL = "https://dawidbubnow.com";
+const SITE_URL = "https://www.webbosswarszawa.com";
 
 const TITLE = "WEBBOSS — Dawid Bubnow, Creative Web Designer & Developer";
 const DESCRIPTION =
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   authors: [{ name: "Dawid Bubnow" }],
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/", languages: { en: "/", pl: "/pl" } },
   icons: { icon: [{ url: "/favicon.svg", type: "image/svg+xml" }] },
   openGraph: {
     type: "website",
