@@ -13,7 +13,7 @@ import { stages } from "../../data/growth";
  *
  *  Phone and reduced motion: the same content as a vertical sequence, no pin. */
 export function System({ motion, isMobile }: { motion: boolean; isMobile: boolean }) {
-  if (!motion || isMobile) return <SystemList />;
+  if (!motion || isMobile) return <SystemList motion={motion} />;
   return <SystemPinned />;
 }
 
@@ -118,9 +118,28 @@ function SystemPinned() {
   );
 }
 
-function SystemList() {
+/** Phone: the path is the one line on screen (the page thread is off on
+ *  phones). It draws down the list as it is read; each station lights up and
+ *  strikes out "the usual" when the line reaches it. */
+function SystemList({ motion }: { motion: boolean }) {
+  const list = useRef<HTMLDivElement>(null);
+  const fill = useRef<HTMLSpanElement>(null);
+
+  useScrollEffect(({ vh }) => {
+    const el = list.current;
+    if (!el || !fill.current) return;
+    const r = el.getBoundingClientRect();
+    const head = vh * 0.62; // where the line's tip sits on screen
+    const p = Math.max(0, Math.min(1, (head - r.top) / r.height));
+    fill.current.style.transform = `scaleY(${p.toFixed(4)})`;
+    el.querySelectorAll<HTMLElement>(".gsysl__item").forEach((item) => {
+      const on = item.getBoundingClientRect().top + 8 < head;
+      item.classList.toggle("is-on", on);
+    });
+  }, motion);
+
   return (
-    <section id="system" className="gsec gsysl" aria-labelledby="sysl-heading">
+    <section id="system" className={`gsec gsysl${motion ? "" : " is-static"}`} aria-labelledby="sysl-heading">
       <Head />
       <h2 id="sysl-heading" className="gsec__title">
         Jeden system.
@@ -128,7 +147,11 @@ function SystemList() {
         <span className="gsec__muted">Jedna osoba za niego odpowiada.</span>
       </h2>
 
-      <ol className="gsysl__list">
+      <div ref={list} className="gsysl__list">
+        <span className="gsysl__track" aria-hidden="true">
+          <span ref={fill} className="gsysl__fill" />
+        </span>
+        <ol>
         {stages.map((s, i) => (
           <li key={s.key} className="gsysl__item">
             <span className="gsysl__node" aria-hidden="true" />
@@ -137,7 +160,9 @@ function SystemList() {
             </p>
             <p className="gsys__usual">
               <span className="meta meta--sm">Zwykle</span>
-              <s>{s.usual}</s>
+              <s className="gsysl__usual">
+                <span className="gsysl__strike">{s.usual}</span>
+              </s>
             </p>
             <p className="gsys__mine">
               <span className="meta meta--sm meta--strong">U mnie</span>
@@ -145,7 +170,8 @@ function SystemList() {
             </p>
           </li>
         ))}
-      </ol>
+        </ol>
+      </div>
 
       <p className="gsysl__final">
         Klientów się <em className="serif accent">projektuje</em>

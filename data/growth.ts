@@ -10,13 +10,36 @@ export const growth = {
 
   /** Optional direct channels. Rendered only when set. */
   instagram: null as string | null, // e.g. "https://instagram.com/webboss"
-  whatsapp: null as string | null, // e.g. "https://wa.me/48600000000"
+  whatsapp: "https://wa.me/48796425392?text=" +
+    encodeURIComponent("Dzień dobry, chcę audyt wycieków. Moja strona / Instagram: "),
+  phone: "+48 796 425 392",
+  phoneHref: "tel:+48796425392",
+
+  /** Capacity. Dawid runs every account himself, so the limit is real: ads,
+   *  landing and follow-up for more than three new firms a month would not
+   *  get done properly. Update `taken` by hand when a pilot is signed; it
+   *  resets to 0 at the start of each month. */
+  capacity: 3,
+  taken: 0,
+};
+
+/** Veronika's words, lightly edited for length. Her message: huge thanks
+ *  for the growth, she found clients very fast after searching a long time,
+ *  and the strategy we built still brings her new ones. Nothing is added. */
+export const testimonial = {
+  pull: "Długo szukałam klientów. Z Dawidem znalazłam ich bardzo szybko.",
+  body: "Ogromnie dziękuję za ten wzrost. Razem wypracowaliśmy strategię, która działa do dziś — nowi uczniowie wciąż do mnie przychodzą.",
+  name: "Veronika Wise",
+  role: "Veronika English · szkoła angielskiego",
+  initials: "VW",
 } as const;
 
 export const proof = {
   client: "Veronika English",
-  sector: "Kurs języka angielskiego",
-  url: "https://wakacyjny-kurs-angielskiego.vercel.app/",
+  sector: "Szkoła angielskiego · kurs maturalny",
+  /** The matura platform the ads sent people to — the case wears its colours. */
+  url: "https://matura2027.vercel.app/",
+  urlLabel: "matura2027.vercel.app",
   followersFrom: 8941,
   followersTo: 17700,
   /** +70%, derived rather than typed so the two can never disagree */
@@ -34,6 +57,12 @@ export const proof = {
   get revenueMultiple() {
     return Math.floor(this.revenueAfter / this.revenueBefore);
   },
+  /** Where the money came from, as Dawid reports it (rounded, approximate —
+   *  shown with "ok." on the page). Replace with exact figures when known. */
+  streams: [
+    { label: "Zapisy uczniów do szkoły", amount: 30000 },
+    { label: "Kursy maturalne", amount: 10000 },
+  ],
 };
 
 export const leaks = [
@@ -89,12 +118,12 @@ export const caseMoves = [
     note: "Ustawienie i prowadzenie kampanii: kreacje, grupy odbiorców, testowanie komunikatów.",
   },
   {
-    title: "Strona",
-    note: "Landing kursu, na który trafiał ruch z reklam — zaprojektowany i zakodowany przeze mnie.",
+    title: "Platforma kursu",
+    note: "Strona kursu maturalnego, na którą trafiał ruch z reklam — zaprojektowana i zakodowana przeze mnie.",
   },
   {
     title: "Całość procesu",
-    note: "Prowadzenie marketingu od reklamy do zapisu na kurs. Jedna osoba, jeden cel: nowi klienci.",
+    note: "Prowadzenie marketingu od reklamy do zapisu — na kurs maturalny i do szkoły. Jedna osoba, jeden cel: nowi uczniowie.",
   },
 ] as const;
 

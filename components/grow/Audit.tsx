@@ -5,6 +5,8 @@ import { growth, clientValues } from "../../data/growth";
 import { useScrollEffect } from "../../hooks/useScrollEffect";
 import { useInView } from "../../hooks/useInView";
 import { track, sourceOf } from "../../lib/track";
+import { Capacity } from "./Capacity";
+import { QuoteLine } from "./Testimonial";
 
 type State =
   | { kind: "idle" }
@@ -20,7 +22,17 @@ const hhmm = (d: Date) => d.toLocaleTimeString("pl-PL", { hour: "2-digit", minut
  *  After sending, the page shows the follow-up happening — and says so. If the
  *  delivery backend is not configured or fails, the same message opens as a
  *  prefilled e-mail, so an enquiry is never silently lost. */
-export function Audit({ magnetic, preparedFor }: { magnetic: boolean; preparedFor: string | null }) {
+export function Audit({
+  magnetic,
+  preparedFor,
+  band,
+  onBand,
+}: {
+  magnetic: boolean;
+  preparedFor: string | null;
+  band: string | null;
+  onBand: (band: string) => void;
+}) {
   const [root, seen] = useInView<HTMLElement>();
   const [state, setState] = useState<State>({ kind: "idle" });
   const started = useRef(false);
@@ -123,6 +135,8 @@ export function Audit({ magnetic, preparedFor }: { magnetic: boolean; preparedFo
               <span className="meta meta--sm">Zobowiązania</span>Żadnych
             </li>
           </ul>
+          <Capacity />
+          <QuoteLine />
           <div className="gaudit__sign">
             <span className="gaudit__face">
               <Picture name="about-bw" alt={site.name} sizes="54px" />
@@ -172,7 +186,7 @@ export function Audit({ magnetic, preparedFor }: { magnetic: boolean; preparedFo
               <div className="gform__chips">
                 {clientValues.map((v) => (
                   <label key={v} className="gform__chip">
-                    <input type="radio" name="value" value={v} />
+                    <input type="radio" name="value" value={v} checked={band === v} onChange={() => onBand(v)} />
                     <span>{v}</span>
                   </label>
                 ))}
@@ -202,25 +216,30 @@ export function Audit({ magnetic, preparedFor }: { magnetic: boolean; preparedFo
               </div>
             )}
 
-            <p className="gform__alt">
-              Wolisz napisać? <a href={`mailto:${site.email}`}>{site.email}</a>
-              {growth.instagram && (
-                <>
-                  {" · "}
-                  <a href={growth.instagram} target="_blank" rel="noopener noreferrer">
-                    Instagram
-                  </a>
-                </>
-              )}
-              {growth.whatsapp && (
-                <>
-                  {" · "}
-                  <a href={growth.whatsapp} target="_blank" rel="noopener noreferrer">
-                    WhatsApp
-                  </a>
-                </>
-              )}
-            </p>
+            <div className="gform__direct">
+              <span className="meta meta--sm">Wolisz porozmawiać od razu?</span>
+              <div className="gform__directBtns">
+                <a
+                  href={growth.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="gbtn gbtn--ghost gform__wa"
+                  onClick={() => track("Contact", { channel: "whatsapp" })}
+                >
+                  WhatsApp <span aria-hidden="true">↗</span>
+                </a>
+                <a
+                  href={growth.phoneHref}
+                  className="gbtn gbtn--ghost"
+                  onClick={() => track("Contact", { channel: "phone" })}
+                >
+                  Zadzwoń · {growth.phone}
+                </a>
+              </div>
+              <p className="gform__alt">
+                albo napisz: <a href={`mailto:${site.email}`}>{site.email}</a>
+              </p>
+            </div>
           </form>
         )}
       </div>

@@ -29,6 +29,10 @@ const JOBS = [
   { src: "captures/english-desktop.png", name: "english-desktop", widths: [900, 1500, 2100] },
   { src: "captures/english-phone.png", name: "english-phone", widths: [420, 700, 860] },
 
+  // /klienci case — the matura platform the ads sent people to
+  { src: "captures/matura2027-desktop.png", name: "matura2027-desktop", widths: [900, 1500, 2100] },
+  { src: "captures/matura2027-phone.png", name: "matura2027-phone", widths: [420, 700, 860] },
+
   // /klienci case proof — the client's Stripe gross volume, before and after.
   { src: "captures/case-before.jpg", name: "case-before", widths: [700, 1320] },
   { src: "captures/case-after.webp", name: "case-after", widths: [700, 1426] },

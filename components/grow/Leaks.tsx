@@ -2,13 +2,14 @@ import { useRef } from "react";
 import { useScrollEffect } from "../../hooks/useScrollEffect";
 import { centered, clamp, ease } from "../../lib/driver";
 import { leaks } from "../../data/growth";
+import { Calculator } from "./Calculator";
 
 /** 01 — where the money leaks.
  *
  *  Each leak streams in from the left like the Manifesto lines, holds, and as
  *  it passes the centre a hairline strikes it through and it dims: the
  *  customer who was on the way, and left. */
-export function Leaks({ motion }: { motion: boolean }) {
+export function Leaks({ motion, onBand }: { motion: boolean; onBand: (band: string) => void }) {
   const list = useRef<HTMLOListElement>(null);
 
   useScrollEffect(({ vw }) => {
@@ -62,6 +63,9 @@ export function Leaks({ motion }: { motion: boolean }) {
       <p className="leaks__verdict">
         Reklama zrobiła swoje. <span>To nie jest problem reklamy — to problem systemu.</span>
       </p>
+
+      {/* the leak, priced in the visitor's own numbers */}
+      <Calculator onBand={onBand} />
     </section>
   );
 }

@@ -11,7 +11,7 @@ declare global {
   }
 }
 
-export function track(event: "Lead" | "Contact" | "ViewCase" | "StartForm", params: Record<string, string> = {}) {
+export function track(event: "Lead" | "Contact" | "ViewCase" | "StartForm" | "UseCalculator" | "CalculatorCta", params: Record<string, string> = {}) {
   if (typeof window === "undefined") return;
   const standard = event === "Lead" || event === "Contact";
   window.fbq?.(standard ? "track" : "trackCustom", event, params);

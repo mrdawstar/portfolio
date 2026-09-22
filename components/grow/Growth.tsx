@@ -11,6 +11,7 @@ import { Case } from "./Case";
 import { Scope, Fit, Steps } from "./Offer";
 import { Audit } from "./Audit";
 import { Analytics } from "./Analytics";
+import { Capacity } from "./Capacity";
 import { MobileMenu } from "../MobileMenu";
 import { LangProvider } from "../../lib/lang";
 import "../Nav.css";
@@ -41,6 +42,8 @@ export default function Growth() {
   const finePointer = useFinePointer();
   const motion = !reduced;
   const preparedFor = usePreparedFor();
+  // the calculator's "value of one client" pre-selects the same band in the form
+  const [band, setBand] = useState<string | null>(null);
 
   return (
     <LangProvider lang="pl">
@@ -50,7 +53,9 @@ export default function Growth() {
       </a>
 
       <Analytics />
-      <Thread enabled={motion} />
+      {/* on a phone the gutter is too narrow for a second line beside the
+          System path, so the thread is a desktop-only device */}
+      <Thread enabled={motion && !isMobile} />
       <GrowNav isMobile={isMobile} />
 
       <main>
@@ -58,12 +63,12 @@ export default function Growth() {
         {/* cold traffic gets the proof before the pitch */}
         <Case motion={motion} />
         <CtaBand />
-        <Leaks motion={motion} />
+        <Leaks motion={motion} onBand={setBand} />
         <System motion={motion} isMobile={isMobile} />
         <Scope />
         <Fit />
         <Steps />
-        <Audit magnetic={motion && finePointer} preparedFor={preparedFor} />
+        <Audit magnetic={motion && finePointer} preparedFor={preparedFor} band={band} onBand={setBand} />
       </main>
 
       <StickyCta />
@@ -87,9 +92,12 @@ const menuLinks = [
 function CtaBand() {
   return (
     <aside className="gband">
-      <p className="gband__t">
-        Chcesz zobaczyć, ile klientów tracisz <em className="serif">po drodze</em>?
-      </p>
+      <div className="gband__copy">
+        <p className="gband__t">
+          Chcesz zobaczyć, ile klientów tracisz <em className="serif">po drodze</em>?
+        </p>
+        <Capacity tone="band" />
+      </div>
       <a href="#audyt" className="gbtn gbtn--solid">
         Pokaż, gdzie tracę klientów <span aria-hidden="true">→</span>
       </a>
@@ -178,7 +186,10 @@ function StickyCta() {
     const form = document.getElementById("audyt");
     const pastHero = window.scrollY > vh * 0.9;
     const atForm = form ? form.getBoundingClientRect().top < vh * 0.85 : false;
-    const next = pastHero && !atForm;
+    // never two orange buttons at once: stand down while the band is on screen
+    const band = document.querySelector(".gband")?.getBoundingClientRect();
+    const atBand = band ? band.bottom > 0 && band.top < vh : false;
+    const next = pastHero && !atForm && !atBand;
     setShow((prev) => (prev === next ? prev : next));
   });
 
